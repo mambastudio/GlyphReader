@@ -46,17 +46,10 @@ public final class ResizeableCanvas extends Region
     
     public void draw() {
         getGraphicsContext2D().clearRect(0, 0, Float.MAX_VALUE, Float.MAX_VALUE);   
-        
-               
-        drawGlyph(consume);
-        
-    }
-      
-    private void drawGlyph(Consumer<GraphicsContext> consume)
-    {
         if(consume != null)
-            consume.accept(getGraphicsContext2D());
+            consume.accept(getGraphicsContext2D());        
     }
+    
     
     public void setDrawGlyph(Consumer<GraphicsContext> consume)
     {

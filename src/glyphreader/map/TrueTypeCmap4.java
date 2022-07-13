@@ -96,9 +96,9 @@ public class TrueTypeCmap4 extends CMap{
                         index = (segment.idDelta + charCode) & 0xffff;
                     }
 
-                    System.out.format("Charcode %s is between %s and %s; maps to %s (%s) roffset=%s",
-                        charCode, segment.startCode, segment.endCode,
-                        glyphIndexAddress, index, segment.idRangeOffset);
+                    //System.out.format("Charcode %s is between %s and %s; maps to %s (%s) roffset=%s",
+                    //    charCode, segment.startCode, segment.endCode,
+                    //    glyphIndexAddress, index, segment.idRangeOffset);
 
                     this.cache.put(charCode, index);
                     break;

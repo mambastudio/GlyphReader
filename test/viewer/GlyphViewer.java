@@ -64,54 +64,6 @@ public class GlyphViewer extends Application{
         launch(args);
     }
     
-    public void initDraw(ResizeableCanvas renderCanvas)
-    {
-        TrueTypeFont ttf = new TrueTypeFont(Paths.get("C:\\Users\\jmburu\\Downloads\\Edu_NSW_ACT_Foundation\\static", "EduNSWACTFoundation-Bold.ttf"));
-        glyphList = new GlyphContent(ttf);
-        //renderCanvas.setDrawGlyph(getDrawText("Joe", glyphList, 32, 0, 0));
-        
-        
-        renderCanvas.setDrawGlyph((ctx)->{
-            FBound fbounds = ttf.getBound();
-            double fwidth = fbounds.getWidth();
-            double fheight = fbounds.getHeight();
-            
-            double fscale = 64 / (double)ttf.headTable.unitsPerEm;
-                        
-            double pixID = -fwidth; //added in the for loop to become 0
-            
-            for(int i = 0; i<glyphList.size(); i++)
-            {
-                pixID += fwidth; 
-                int x = (int) (pixID % (renderCanvas.getWidth()/fscale));
-                int y = (int) (pixID / (renderCanvas.getWidth()/fscale)) ;
-                
-                double pixIDN = pixID + fwidth;                
-                int yN = (int) (pixIDN / (renderCanvas.getWidth()/fscale));
-                
-                if(yN != y)
-                {
-                    pixID += fwidth;
-                    x = (int) (pixID % (renderCanvas.getWidth()/fscale));
-                    y = (int) (pixID / (renderCanvas.getWidth()/fscale)) ;
-                }
-                                    
-                ctx.save();
-                ctx.scale(fscale, -fscale);
-                ctx.translate(x + ttf.headTable.xMin, ttf.headTable.yMin - fheight - (y * fheight));                
-                ctx.setFill(Color.BLACK);
-                ctx.beginPath();
-                
-                if (drawGlyph(glyphList.get(i), ctx, 0, 0)) {
-                    ctx.fill();
-                    
-                }
-                ctx.restore();
-            }
-        });
-        
-    }
-    
     public boolean drawGlyph(Glyph glyph, GraphicsContext ctx, int x, int y)
     {        
         if ( glyph == null) {
@@ -171,12 +123,21 @@ public class GlyphViewer extends Application{
 
         return true;
     }
-    public Consumer<GraphicsContext> getDrawText(String text, GlyphContent glyphList, final double size, final double x, final double y)
+    
+    public void initDraw(ResizeableCanvas renderCanvas)
+    {
+        TrueTypeFont ttf = new TrueTypeFont(Paths.get("C:\\Users\\user\\Downloads\\PT_Serif", "PTSerif-Regular.ttf"));
+        glyphList = new GlyphContent(ttf);
+        
+        renderCanvas.setDrawGlyph(this.drawText("First try of javafx custom glyphs", glyphList, 70, 0, 125));        
+        //renderCanvas.setDrawGlyph(this.drawAllGlyphs(renderCanvas, glyphList));
+        
+    }
+    
+    public Consumer<GraphicsContext> drawText(String text, GlyphContent glyphList, final double size, final double x, final double y)
     {
         return (ctx)->{
-            ctx.save();
-            ctx.translate(x, y);
-            this.scale(ctx, size);
+            
             double sx = 0;
             double sy = 0;
             this.resetKern();
@@ -184,23 +145,76 @@ public class GlyphViewer extends Application{
             for (int i = 0; i < text.length(); i++) {
                 int index = this.mapCode(text.charAt(i));
                 FPoint2i metrics = glyphList.getHorizontalMetrics(index);
+                
                 FPoint2d kern = this.nextKern(index);
                 //this.log("Metrics for %s code %s index %s: %s %s kern: %s,%s", text.charAt(i),
                 //    text.charAt(i), index, metrics.advanceWidth, metrics.leftSideBearing,
                 //    kern.x, kern.y);
-                    
-                this.drawGlyph(glyphList.get(index), ctx, (int)(sx + kern.x), (int) (sy + kern.y));
-
+                ctx.save();
+                ctx.translate(x, y);
+                this.scale(ctx, size);
+                ctx.beginPath();
+                if(this.drawGlyph(glyphList.get(index), ctx, (int)(sx + kern.x),//- metrics.leftSideBearing, 
+                    (int)(sy + kern.y)))
+                   ctx.fill();
+                ctx.restore();
+                
                 sx += metrics.x; //metrics.advanceWidth;
             }
-            ctx.restore();
             
+            
+            
+        };
+    }
+    
+    public Consumer<GraphicsContext> drawAllGlyphs(
+            ResizeableCanvas renderCanvas, 
+            GlyphContent glyphList)
+    {
+        return (ctx)->{
+            FBound fbounds = glyphList.getGlyphBound();
+            double fwidth = fbounds.getWidth();
+            double fheight = fbounds.getHeight(); 
+            
+            double fscale = 64 / glyphList.getUnitsPerEm();
+                        
+            double pixID = -fwidth; //added in the for loop to become 0
+            
+            for(int i = 0; i<glyphList.size(); i++)
+            {
+                pixID += fwidth; 
+                int x = (int) (pixID % (renderCanvas.getWidth()/fscale));
+                int y = (int) (pixID / (renderCanvas.getWidth()/fscale)) ;
+                
+                double pixIDN = pixID + fwidth;                
+                int yN = (int) (pixIDN / (renderCanvas.getWidth()/fscale));
+                
+                if(yN != y)
+                {
+                    pixID += fwidth;
+                    x = (int) (pixID % (renderCanvas.getWidth()/fscale));
+                    y = (int) (pixID / (renderCanvas.getWidth()/fscale)) ;
+                }
+                                    
+                ctx.save();
+                ctx.scale(fscale, -fscale);
+                ctx.translate(x + fbounds.xMin, fbounds.yMin - fheight - (y * fheight));                
+                ctx.setFill(Color.BLACK);
+                ctx.beginPath();
+                
+                if (drawGlyph(glyphList.get(i), ctx, 0, 0)) {
+                    ctx.fill();
+                    
+                }
+                ctx.restore();
+            }
         };
     }
     
     private void scale(GraphicsContext ctx, double size)
     {
         ctx.scale(size / this.glyphList.getUnitsPerEm(), -size / this.glyphList.getUnitsPerEm());
+        
     }
     
     public void resetKern() {
@@ -221,13 +235,14 @@ public class GlyphViewer extends Application{
     }
     
     public int mapCode(int charCode) {
-        int index = 0;
+        int index = 0; 
         for (int i = 0; i < glyphList.getCMapSize(); i++) {
             CMap cmap = glyphList.getCMap(index);
             index = cmap.map(charCode);
             if (index > 0) {
                 break;
             }
+            
         }
         return index;
     }
