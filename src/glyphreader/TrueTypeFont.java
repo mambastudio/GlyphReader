@@ -7,8 +7,9 @@ package glyphreader;
 
 import glyphreader.read.BinaryMapReader;
 import glyphreader.core.FMatrix;
-import glyphreader.core.FPoint;
+import glyphreader.core.FPoint2d;
 import glyphreader.core.FBound;
+import glyphreader.core.FPoint2i;
 import glyphreader.table.CMapTable;
 import glyphreader.table.HeadTable;
 import glyphreader.table.HheaTable;
@@ -101,6 +102,7 @@ public final class TrueTypeFont {
         
         tables = ctables;
         
+        
     }
     
     //to verify if the unsigned values are read correct
@@ -187,7 +189,7 @@ public final class TrueTypeFont {
     
     public void readCoords(char name, int byteFlag,
             int deltaFlag, double min, double max, 
-            int numPoints, ArrayList<Integer> flags, ArrayList<FPoint> points) {
+            int numPoints, ArrayList<Integer> flags, ArrayList<FPoint2d> points) {
         int  value = 0;
 
         for (int i = 0; i < numPoints; i++) {
@@ -217,7 +219,7 @@ public final class TrueTypeFont {
             Y_DELTA = 32;
 
         glyph.contourEnds = new ArrayList<>();
-        ArrayList<FPoint> points = glyph.points;
+        ArrayList<FPoint2d> points = glyph.points;
 
         for (int i = 0; i < glyph.numberOfContours; i++) {
             glyph.contourEnds.add(file.getUint16());
@@ -237,7 +239,7 @@ public final class TrueTypeFont {
         for (int i = 0; i < numPoints; i++) {
             int flag = file.getUint8();
             flags.add(flag); 
-            points.add(new FPoint(0, 0, (flag & ON_CURVE) > 0));
+            points.add(new FPoint2d(0, 0, (flag & ON_CURVE) > 0));
 
             if ((flag & REPEAT)>0) {
                 int repeatCount = file.getUint8();
@@ -245,7 +247,7 @@ public final class TrueTypeFont {
                 i += repeatCount;
                 while ((repeatCount--)>0) {
                     flags.add(flag);
-                    points.add(new FPoint(0,0,(flag & ON_CURVE) > 0));
+                    points.add(new FPoint2d(0,0,(flag & ON_CURVE) > 0));
                 }
             }
         }
@@ -329,7 +331,7 @@ public final class TrueTypeFont {
                         component.matrix.e;
                     y = component.matrix.c * x + component.matrix.d * y +
                         component.matrix.f;
-                    glyph.points.add(new FPoint(x, y, simpleGlyph.points.get(i).onCurve));
+                    glyph.points.add(new FPoint2d(x, y, simpleGlyph.points.get(i).onCurve));
                 }
             }
 
@@ -347,5 +349,32 @@ public final class TrueTypeFont {
     public FBound getBound()
     {
         return new FBound(headTable.xMin, headTable.yMin, headTable.xMax, headTable.yMax);
+    }
+    
+    public FPoint2i getHorizontalMetrics(int glyphIndex) 
+    {                
+        if(tables.containsKey("hmtx"))
+        {
+            int old = file.seek(this.tables.get("hmtx").offset + 4);
+            int offset = this.tables.get("hmtx").offset;
+            int advanceWidth, leftSideBearing;
+            if (glyphIndex < this.hheaTable.numOfLongHorMetrics) {
+                offset += glyphIndex * 4;
+                old = this.file.seek(offset);
+                advanceWidth = file.getUint16();
+                leftSideBearing = file.getInt16();
+            } else {
+                // read the last entry of the hMetrics array
+                old = file.seek(offset + (this.hheaTable.numOfLongHorMetrics - 1) * 4);
+                advanceWidth = file.getUint16();
+                file.seek(offset + this.hheaTable.numOfLongHorMetrics * 4 +
+                    2 * (glyphIndex - this.hheaTable.numOfLongHorMetrics));
+                leftSideBearing = file.getFword();
+            }
+
+            this.file.seek(old);
+            return new FPoint2i(advanceWidth, leftSideBearing); 
+        }
+        return null;
     }
 }

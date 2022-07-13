@@ -6,7 +6,7 @@
 package glyphreader.map;
 
 import glyphreader.read.BinaryMapReader;
-import glyphreader.core.FPoint;
+import glyphreader.core.FPoint2d;
 import java.util.HashMap;
 
 /**
@@ -44,7 +44,7 @@ public class Kern0Table {
         this.oldIndex = -1;
     }
 
-    public FPoint get(int glyphIndex) {
+    public FPoint2d get(int glyphIndex) {
         int x = 0;
         if (this.oldIndex >= 0) {
             int ch = (this.oldIndex << 16) | glyphIndex;
@@ -56,12 +56,12 @@ public class Kern0Table {
         }
         this.oldIndex = glyphIndex;
         if (this.swap) {
-            FPoint pt = new FPoint();
+            FPoint2d pt = new FPoint2d();
             pt.x = 0;
             pt.y = x;
             return pt;
         } else {
-            FPoint pt = new FPoint();
+            FPoint2d pt = new FPoint2d();
             pt.x = x;
             pt.y = 0;
             return pt;

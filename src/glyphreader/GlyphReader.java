@@ -5,7 +5,7 @@
  */
 package glyphreader;
 
-import glyphreader.core.FPoint;
+import glyphreader.core.FPoint2d;
 import java.nio.file.Paths;
 
 /**

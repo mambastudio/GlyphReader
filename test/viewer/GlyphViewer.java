@@ -8,9 +8,12 @@ package viewer;
 import glyphreader.core.FBound;
 import glyphreader.Glyph;
 import glyphreader.GlyphContent;
-import glyphreader.core.FPoint;
+import glyphreader.core.FPoint2d;
 import glyphreader.TrueTypeFont;
+import glyphreader.core.FPoint2i;
+import glyphreader.map.CMap;
 import java.nio.file.Paths;
+import java.util.function.Consumer;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -25,6 +28,8 @@ import javafx.stage.Stage;
  * @author user
  */
 public class GlyphViewer extends Application{
+    
+    private GlyphContent glyphList;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -61,15 +66,17 @@ public class GlyphViewer extends Application{
     
     public void initDraw(ResizeableCanvas renderCanvas)
     {
-        TrueTypeFont ttf = new TrueTypeFont(Paths.get("C:\\Users\\user\\Downloads", "MaterialSymbolsRounded[FILL,GRAD,opsz,wght].ttf"));
-        GlyphContent glyphList = new GlyphContent(ttf);
+        TrueTypeFont ttf = new TrueTypeFont(Paths.get("C:\\Users\\jmburu\\Downloads\\Edu_NSW_ACT_Foundation\\static", "EduNSWACTFoundation-Bold.ttf"));
+        glyphList = new GlyphContent(ttf);
+        //renderCanvas.setDrawGlyph(getDrawText("Joe", glyphList, 32, 0, 0));
+        
         
         renderCanvas.setDrawGlyph((ctx)->{
             FBound fbounds = ttf.getBound();
             double fwidth = fbounds.getWidth();
             double fheight = fbounds.getHeight();
             
-            double fscale = 24 / (double)ttf.headTable.unitsPerEm;
+            double fscale = 64 / (double)ttf.headTable.unitsPerEm;
                         
             double pixID = -fwidth; //added in the for loop to become 0
             
@@ -102,6 +109,7 @@ public class GlyphViewer extends Application{
                 ctx.restore();
             }
         });
+        
     }
     
     public boolean drawGlyph(Glyph glyph, GraphicsContext ctx, int x, int y)
@@ -114,10 +122,10 @@ public class GlyphViewer extends Application{
             p = 0,
             c = 0,
             contourStart = 0;
-        FPoint  prev;
+        FPoint2d  prev;
         
         for (; p < glyph.points.size(); p++) {
-            FPoint point = glyph.points.get(p);
+            FPoint2d point = glyph.points.get(p);
             switch (s) {
                 case 0:
                     ctx.moveTo(point.x + x, point.y + y);
@@ -163,6 +171,74 @@ public class GlyphViewer extends Application{
 
         return true;
     }
+    public Consumer<GraphicsContext> getDrawText(String text, GlyphContent glyphList, final double size, final double x, final double y)
+    {
+        return (ctx)->{
+            ctx.save();
+            ctx.translate(x, y);
+            this.scale(ctx, size);
+            double sx = 0;
+            double sy = 0;
+            this.resetKern();
+            
+            for (int i = 0; i < text.length(); i++) {
+                int index = this.mapCode(text.charAt(i));
+                FPoint2i metrics = glyphList.getHorizontalMetrics(index);
+                FPoint2d kern = this.nextKern(index);
+                //this.log("Metrics for %s code %s index %s: %s %s kern: %s,%s", text.charAt(i),
+                //    text.charAt(i), index, metrics.advanceWidth, metrics.leftSideBearing,
+                //    kern.x, kern.y);
+                    
+                this.drawGlyph(glyphList.get(index), ctx, (int)(sx + kern.x), (int) (sy + kern.y));
+
+                sx += metrics.x; //metrics.advanceWidth;
+            }
+            ctx.restore();
+            
+        };
+    }
     
+    private void scale(GraphicsContext ctx, double size)
+    {
+        ctx.scale(size / this.glyphList.getUnitsPerEm(), -size / this.glyphList.getUnitsPerEm());
+    }
     
+    public void resetKern() {
+        for (int i = 0; i < glyphList.getKernSize(); i++) {
+            glyphList.getKern0Table(i).reset();
+        }
+    }
+
+    public FPoint2d nextKern(int glyphIndex) {
+        FPoint2d pt;
+        double x = 0, y = 0;
+        for (int i = 0; i < glyphList.getKernSize(); i++) {
+            pt = glyphList.getKern0Table(i).get(glyphIndex);
+            x += pt.x;
+            y += pt.y;
+        }
+        return new FPoint2d(x, y);
+    }
+    
+    public int mapCode(int charCode) {
+        int index = 0;
+        for (int i = 0; i < glyphList.getCMapSize(); i++) {
+            CMap cmap = glyphList.getCMap(index);
+            index = cmap.map(charCode);
+            if (index > 0) {
+                break;
+            }
+        }
+        return index;
+    }
+    
+    public void drawSingleGlyph(GraphicsContext ctx, int glyphIndex,
+        int x, int y, int size) 
+    {
+        ctx.save();
+        ctx.translate(x, y);
+        this.scale(ctx, size);
+        this.drawGlyph(glyphList.get(glyphIndex), ctx, 0, 0);
+        ctx.restore();
+    }
 }

@@ -6,7 +6,7 @@
 package glyphreader;
 
 import glyphreader.core.FBound;
-import glyphreader.core.FPoint;
+import glyphreader.core.FPoint2d;
 import java.util.ArrayList;
 
 /**
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class Glyph {
     public ArrayList<Integer> contourEnds;
     public int numberOfContours;
-    public ArrayList<FPoint> points;
+    public ArrayList<FPoint2d> points;
     public FBound bound;
         
     public Glyph()

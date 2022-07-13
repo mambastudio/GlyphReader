@@ -9,22 +9,21 @@ package glyphreader.core;
  *
  * @author jmburu
  */
-public class FPoint {
-    public double x;
-    public double y;
-    public boolean onCurve;
+public class FPoint2i {
+    public int x;
+    public int y;
+   
     
-    public FPoint()
+    public FPoint2i()
     {
         
     }
     
-    public FPoint(double x, double y, boolean onCurve)
+    public FPoint2i(int x, int y)
     {
-        this.x = x; this.y = y;
-        this.onCurve = onCurve;
+        this.x = x; this.y = y;        
     }
-    
+        
     public void set(char axis, int value)
     {
         switch (axis) {
@@ -42,6 +41,6 @@ public class FPoint {
     @Override
     public String toString()
     {
-        return String.format("(%3.2f, %3.2f, %b)", x, y, onCurve);
+        return String.format("(%3d, %3d)", x, y);
     }
 }
