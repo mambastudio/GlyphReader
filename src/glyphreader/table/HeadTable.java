@@ -9,6 +9,8 @@ import glyphreader.map.TableRecord;
 import glyphreader.read.BinaryMapReader;
 import glyphreader.FUtility;
 import glyphreader.map.Table;
+import static glyphreader.map.Table.TableType.HEAD;
+import glyphreader.map.TableList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -18,7 +20,7 @@ import java.util.HashMap;
  */
 public class HeadTable implements Table{
     public int  version             = 0;
-    public double  fontRevision        = 0;
+    public double  fontRevision     = 0;
     public int  checksumAdjustment  = 0;
     public int  magicNumber         = 0;    
     public int  flags               = 0;
@@ -35,13 +37,17 @@ public class HeadTable implements Table{
     public int  indexToLocFormat    = 0;
     public int  glyphDataFormat     = 0;
     
-    @Override
-    public void read(BinaryMapReader file, HashMap<String, TableRecord> tables)
+    TableRecord record;
+    
+    public HeadTable()
     {
-        if(!tables.containsKey("head"))
-            throw new UnsupportedOperationException("No head table");
-        
-        int tableOffset = tables.get("head").offset;
+        record = new TableRecord();
+    }
+    
+    @Override
+    public void read(BinaryMapReader file, TableList tables)
+    {       
+        int tableOffset = record.offset;
         file.seek(tableOffset);
         
         this.version =  (int) file.getFixed(); 
@@ -86,5 +92,15 @@ public class HeadTable implements Table{
         builder.append("indexToLocFormat    = ").append(indexToLocFormat).append("\n");
         builder.append("glyphDataFormat     = ").append(glyphDataFormat);        
         return builder.toString();
+    }
+
+    @Override
+    public TableRecord getRecord() {
+        return new TableRecord();
+    }
+
+    @Override
+    public TableType getType() {
+        return HEAD;
     }
 }

@@ -5,6 +5,7 @@
  */
 package glyphreader.map;
 
+import static glyphreader.map.Table.TableType.NULL;
 import glyphreader.read.BinaryMapReader;
 import java.util.HashMap;
 
@@ -13,5 +14,19 @@ import java.util.HashMap;
  * @author user
  */
 public interface Table {
-    public void read(BinaryMapReader file, HashMap<String, TableRecord> tables);
+    
+    enum TableType{
+        CMAP, HEAD, HHEA, HMTX, KERN, MAXP, NAME, POST, NULL
+    };
+        
+    public void read(BinaryMapReader file, TableList tables);    
+    public TableRecord getRecord();   
+    public TableType getType();
+    
+    default String getName()
+    {
+        return getType().name().toLowerCase();
+    }
+    
+    
 }

@@ -8,9 +8,10 @@ package glyphreader.table;
 import glyphreader.read.BinaryMapReader;
 import glyphreader.map.Kern0Table;
 import glyphreader.map.Table;
+import static glyphreader.map.Table.TableType.KERN;
+import glyphreader.map.TableList;
 import glyphreader.map.TableRecord;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  *
@@ -18,18 +19,20 @@ import java.util.HashMap;
  */
 public class KernTable implements Table{
     
-    public ArrayList<Kern0Table> kern = new ArrayList<>();
+    public ArrayList<Kern0Table> kern;
+    
+    private final TableRecord record;
+    
+    public KernTable()
+    {
+        record = new TableRecord();
+        kern = new ArrayList<>();
+    }
     
     @Override
-    public void read(BinaryMapReader file, HashMap<String, TableRecord> tables)
-    {
-        if(!tables.containsKey("kern"))
-        {            
-            System.out.println("no kern table");
-            return;
-        }
-        
-        int tableOffset = tables.get("kern").offset;
+    public void read(BinaryMapReader file, TableList tables)
+    { 
+        int tableOffset = record.offset;
         file.seek(tableOffset);
         
         int version = file.getUint16(); // version 0
@@ -57,5 +60,15 @@ public class KernTable implements Table{
                 this.kern.add(kern);
             }
         }
+    }
+
+    @Override
+    public TableRecord getRecord() {
+        return record;
+    }
+
+    @Override
+    public TableType getType() {
+        return KERN;
     }
 }

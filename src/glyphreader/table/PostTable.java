@@ -7,11 +7,11 @@ package glyphreader.table;
 
 import static glyphreader.FUtility.standardNames;
 import glyphreader.map.Table;
+import static glyphreader.map.Table.TableType.POST;
+import glyphreader.map.TableList;
 import glyphreader.map.TableRecord;
 import glyphreader.read.BinaryMapReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 /**
  *
@@ -30,16 +30,19 @@ public class PostTable implements Table{
     
     //targeting version 2.0   
     public String[] stringData = null;
+    
+    private final TableRecord record;
+    
+    public PostTable()
+    {
+        this.record = new TableRecord();
+    }
    
     
     @Override
-    public void read(BinaryMapReader file, HashMap<String, TableRecord> tables) {
-        if(!tables.containsKey("post")){
-            System.out.println("no table");
-            return;
-        }
-        
-        int tableOffset = tables.get("post").offset;
+    public void read(BinaryMapReader file, TableList tables) {
+               
+        int tableOffset = record.offset;
         file.seek(tableOffset);
         this.version            = file.getVersion16Dot16();
         this.italicAngle        = file.getFixed();
@@ -79,4 +82,14 @@ public class PostTable implements Table{
                 break;
         }  
     }    
+
+    @Override
+    public TableRecord getRecord() {
+        return new TableRecord();
+    }
+
+    @Override
+    public TableType getType() {
+        return POST;
+    }
 }

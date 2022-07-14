@@ -10,12 +10,18 @@ import glyphreader.core.FMatrix;
 import glyphreader.core.FPoint2d;
 import glyphreader.core.FBound;
 import glyphreader.core.FPoint2i;
+import glyphreader.map.CMap;
+import glyphreader.map.Table;
+import glyphreader.map.Table.TableType;
+import glyphreader.map.TableList;
 import glyphreader.table.CMapTable;
 import glyphreader.table.HeadTable;
 import glyphreader.table.HheaTable;
 import glyphreader.table.NameTable;
 import glyphreader.map.TableRecord;
+import glyphreader.table.HmtxTable;
 import glyphreader.table.KernTable;
+import glyphreader.table.MaxpTable;
 import glyphreader.table.PostTable;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,19 +36,13 @@ import java.util.HashMap;
 public final class TrueTypeFont {
     private BinaryMapReader file = null;
     
-    public HashMap<String, TableRecord> tables = null;
+    TableList tables = null;
+    
     public int scalarType = 0;
     public int searchRange = 0;
     public int entrySelector = 0;
     public int rangeShift = 0;
-    
-    public HeadTable headTable = null;
-    
-    public NameTable nameTable = null;
-    public CMapTable cmapTable = null;
-    public HheaTable hheaTable = null;
-    public KernTable kernTable = null;
-    public PostTable postTable = null;
+  
     
     public int length;
     
@@ -51,22 +51,17 @@ public final class TrueTypeFont {
         if(!Files.exists(path))
             throw new UnsupportedOperationException("File does not exist: " +path);
         this.file = new BinaryMapReader(path);
-        
-        headTable = new HeadTable();
-        nameTable = new NameTable();
-        cmapTable = new CMapTable();
-        hheaTable = new HheaTable();
-        kernTable = new KernTable();
-        postTable = new PostTable();
-        
+        this.tables = new TableList();
+                
         readOffsetTables();
         
         headTable.read(file, tables); 
-        nameTable.read(file, tables);
-        cmapTable.read(file, tables);
-        hheaTable.read(file, tables);
-        kernTable.read(file, tables);
-        postTable.read(file, tables);
+        nameTable.read(file, tables); 
+        cmapTable.read(file, tables); 
+        hheaTable.read(file, tables); 
+        kernTable.read(file, tables); 
+        postTable.read(file, tables); 
+        hmtxTable.read(file, tables); 
         
         length = glyphCount();
         System.out.println("glyph count " +length);
@@ -74,7 +69,7 @@ public final class TrueTypeFont {
     
     public void readOffsetTables()
     {
-        HashMap<String, TableRecord> ctables = new HashMap<>();
+        
         scalarType = file.getUint32();
         int numTables = file.getUint16();
         
@@ -83,15 +78,16 @@ public final class TrueTypeFont {
         this.rangeShift = file.getUint16();
         
         for(int i = 0 ; i < numTables; i++ ) {
+            //create table
             String tag = file.getString(4);
+            Table table = this.generateTable(tag);
+            tables.addTable(table);
             
-            TableRecord table = new TableRecord();
-            table.checksum = file.getUint32();
-            table.offset = file.getUint32();
-            table.length = file.getUint32();
-            
-            ctables.put(tag, table);
-            
+            TableRecord recordTable = table.getRecord();
+            recordTable.checksum = file.getUint32();
+            recordTable.offset = file.getUint32();
+            recordTable.length = file.getUint32();
+                        
             if(!tag.contains("head"))
             {
                 //System.out.println("TableRecord " +tag+ " has checksum " +table.checksum);
@@ -100,9 +96,29 @@ public final class TrueTypeFont {
             }
         }
         
-        tables = ctables;
         
         
+    }
+    
+    public Table generateTable(String string)
+    {
+        if(string.equals(TableType.CMAP.name().toLowerCase()))
+            return new CMapTable();
+        else if(string.equals(TableType.HEAD.name().toLowerCase()))
+            return new HeadTable();
+        else if(string.equals(TableType.HHEA.name().toLowerCase()))
+            return new HheaTable();
+        else if(string.equals(TableType.HMTX.name().toLowerCase()))
+            return new HmtxTable();
+        else if(string.equals(TableType.KERN.name().toLowerCase()))
+            return new KernTable();
+        else if(string.equals(TableType.MAXP.name().toLowerCase()))
+            return new MaxpTable();
+        else if(string.equals(TableType.NAME.name().toLowerCase()))
+            return new NameTable();
+        else if(string.equals(TableType.POST.name().toLowerCase()))
+            return new PostTable();
+        return null;
     }
     
     //to verify if the unsigned values are read correct
@@ -358,20 +374,20 @@ public final class TrueTypeFont {
             int old = file.seek(this.tables.get("hmtx").offset + 4);
             int offset = this.tables.get("hmtx").offset;
             int advanceWidth, leftSideBearing;
-            if (glyphIndex < this.hheaTable.numOfLongHorMetrics) {
+            if (glyphIndex < this.hheaTable.numOfHorMetrics) {
                 offset += glyphIndex * 4;
                 old = this.file.seek(offset);
                 advanceWidth = file.getUint16();
                 leftSideBearing = file.getInt16();
             } else {
                 // read the last entry of the hMetrics array
-                old = file.seek(offset + (this.hheaTable.numOfLongHorMetrics - 1) * 4);
+                old = file.seek(offset + (this.hheaTable.numOfHorMetrics - 1) * 4);
                 advanceWidth = file.getUint16();
-                file.seek(offset + this.hheaTable.numOfLongHorMetrics * 4 +
-                    2 * (glyphIndex - this.hheaTable.numOfLongHorMetrics));
+                file.seek(offset + this.hheaTable.numOfHorMetrics * 4 +
+                    2 * (glyphIndex - this.hheaTable.numOfHorMetrics));
                 leftSideBearing = file.getFword();
             }
-
+ 
             this.file.seek(old);
             return new FPoint2i(advanceWidth, leftSideBearing); 
         }

@@ -10,7 +10,8 @@ import glyphreader.read.BinaryMapReader;
 import glyphreader.FUtility;
 import glyphreader.map.NameRecord;
 import glyphreader.map.Table;
-import java.util.HashMap;
+import static glyphreader.map.Table.TableType.NAME;
+import glyphreader.map.TableList;
 
 /**
  *
@@ -18,15 +19,18 @@ import java.util.HashMap;
  */
 public class NameTable implements Table{
     
-    public NameRecord[] nameRecords = null;        
+    public NameRecord[] nameRecords = null;    
+    private final TableRecord record;
+    
+    public NameTable()
+    {
+        record = new TableRecord();
+    }
     
     @Override
-    public void read(BinaryMapReader file, HashMap<String, TableRecord> tables)
-    {
-        if(!tables.containsKey("name"))
-            throw new UnsupportedOperationException("No name table");
-        
-        int tableOffset = tables.get("name").offset;
+    public void read(BinaryMapReader file, TableList tables)
+    {                
+        int tableOffset = record.offset;
         file.seek(tableOffset);
         
         int format = file.getUint16(); // must be 0
@@ -89,4 +93,14 @@ public class NameTable implements Table{
         }
         return builder.toString().trim();
     } 
+
+    @Override
+    public TableRecord getRecord() {
+        return record;
+    }
+
+    @Override
+    public TableType getType() {
+        return NAME;
+    }
 }

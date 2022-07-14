@@ -6,6 +6,7 @@
 package glyphreader.core;
 
 import glyphreader.TrueTypeFont;
+import glyphreader.table.HheaTable;
 
 /**
  *
@@ -14,35 +15,37 @@ import glyphreader.TrueTypeFont;
 public class FMetrics 
 {
     private final TrueTypeFont ttf;
+    private final HheaTable table;
     
     public FMetrics(TrueTypeFont ttf)
     {
         this.ttf = ttf;
+        this.table = ttf.hheaTable;
     }
     
     public double getAscent()
     {
-        return 0;
+        return table.ascent;
     }
     
     public double getDescent()
     {
-        return 0;
+        return table.descent;
     }
     
     public double lineGap()
     {
-        return 0;
+        return table.lineGap;
     }
     
     public FBound getBound()
     {
-        return null;
+        return ttf.getBound();
     }
     
     public double internalLeading()
     {
-        return 0;
+        return getAscent() - getDescent();
     }
     
     public double externalLeading()

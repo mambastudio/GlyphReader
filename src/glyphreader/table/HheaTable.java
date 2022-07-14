@@ -8,7 +8,8 @@ package glyphreader.table;
 import glyphreader.map.TableRecord;
 import glyphreader.read.BinaryMapReader;
 import glyphreader.map.Table;
-import java.util.HashMap;
+import static glyphreader.map.Table.TableType.HHEA;
+import glyphreader.map.TableList;
 
 /**
  *
@@ -27,15 +28,20 @@ public class HheaTable implements Table{
     public int caretSlopeRun = 0;
     public int caretOffset = 0;
     public int metricDataFormat = 0;
-    public int numOfLongHorMetrics = 0;
+    public int numOfHorMetrics = 0;
+    
+    private final TableRecord record;
+    
+    public HheaTable()
+    {
+        record = new TableRecord();
+    }
     
     @Override
-    public void read(BinaryMapReader file, HashMap<String, TableRecord> tables)
+    public void read(BinaryMapReader file, TableList tables)
     {
-        if(!tables.containsKey("hhea"))
-            throw new UnsupportedOperationException("No hhea table");
-        
-        int tableOffset = tables.get("hhea").offset;
+                
+        int tableOffset = record.offset;
         file.seek(tableOffset);
         
         this.version = file.getFixed(); // 0x00010000
@@ -54,9 +60,9 @@ public class HheaTable implements Table{
         file.getInt16(); // reserved
         file.getInt16(); // reserved
         this.metricDataFormat = file.getInt16();
-        this.numOfLongHorMetrics = file.getUint16();
+        this.numOfHorMetrics = file.getUint16();
         
-        System.out.println(this);
+        //System.out.println(this);
     }
     
     @Override
@@ -75,7 +81,17 @@ public class HheaTable implements Table{
         builder.append("caretSlopeRun           = ").append(caretSlopeRun).append("\n");
         builder.append("caretOffset             = ").append(caretOffset).append("\n");
         builder.append("metricDataFormat        = ").append(metricDataFormat).append("\n");
-        builder.append("numOfLongHorMetrics     = ").append(numOfLongHorMetrics).append("\n");        
+        builder.append("numOfLongHorMetrics     = ").append(numOfHorMetrics).append("\n");        
         return builder.toString();
+    }
+
+    @Override
+    public TableRecord getRecord() {
+        return record;
+    }
+
+    @Override
+    public TableType getType() {
+        return HHEA;
     }
 }

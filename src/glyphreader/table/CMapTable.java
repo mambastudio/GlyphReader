@@ -9,6 +9,8 @@ import glyphreader.map.TableRecord;
 import glyphreader.read.BinaryMapReader;
 import glyphreader.map.CMap;
 import glyphreader.map.Table;
+import static glyphreader.map.Table.TableType.CMAP;
+import glyphreader.map.TableList;
 import glyphreader.map.TrueTypeCmap0;
 import glyphreader.map.TrueTypeCmap4;
 import java.util.ArrayList;
@@ -19,15 +21,19 @@ import java.util.HashMap;
  * @author jmburu
  */
 public class CMapTable implements Table{
-    public ArrayList<CMap> cmaps = new ArrayList<>();
+    public ArrayList<CMap> cmaps;
+    public TableRecord record;
+    
+    public CMapTable()
+    {
+        this.cmaps = new ArrayList<>();
+        this.record = new TableRecord();
+    }
     
     @Override
-    public void read(BinaryMapReader file, HashMap<String, TableRecord> tables)
+    public void read(BinaryMapReader file, TableList tables)
     {
-        if(!tables.containsKey("cmap"))
-            throw new UnsupportedOperationException("No cmap");
-        
-        int tableOffset = tables.get("cmap").offset;
+        int tableOffset = record.offset;
         file.seek(tableOffset);
         
         int version = file.getUint16(); // must be 0
@@ -77,6 +83,16 @@ public class CMapTable implements Table{
         }
 
         file.seek(oldPos);
+    }
+
+    @Override
+    public TableRecord getRecord() {
+        return record;
+    }
+
+    @Override
+    public TableType getType() {
+        return CMAP;
     }
 
 }
