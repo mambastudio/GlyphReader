@@ -6,6 +6,7 @@
 package glyphreader.map;
 
 import glyphreader.map.Table.TableType;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -26,6 +27,11 @@ public class TableList {
             tables.put(table.getName(), table);
     }
     
+    public Table getTable(TableType type)
+    {
+        return tables.get(type.toString().toLowerCase());
+    }
+    
     public <T extends Table> T getTable(Class<T> clazz, TableType type)
     {
         if(containsTable(type))
@@ -33,8 +39,18 @@ public class TableList {
         return null;
     }
     
+    public TableRecord getTableRecord(TableType type)
+    {
+        return getTable(type).getRecord();
+    }
+    
     public<T extends Table> boolean containsTable(TableType type)
     {
         return tables.containsKey(type.name().toLowerCase());
+    }
+    
+    public Collection<Table> getTables()
+    {
+        return tables.values();
     }
 }
