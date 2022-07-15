@@ -169,7 +169,7 @@ public final class TrueTypeFont {
         return count;
     }
     
-    /*
+    
     public int getGlyphOffset(int index) {
         FUtility.assertCheck(tables.containsTable(TableType));
         TableRecord table = tables.get("loca");
@@ -195,7 +195,6 @@ public final class TrueTypeFont {
 
         return offset + this.tables.get("glyf").offset;
     }
-*/
     
     public Glyph readGlyph(int index)
     {
