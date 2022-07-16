@@ -15,8 +15,20 @@ public class TableRecord<T extends Table> {
     public int offset;
     public int length;
     
-    private T table;
-
+    private String name;
+    
+    public TableRecord(String name)
+    {
+        if(name == null)
+            throw new UnsupportedOperationException("no name");
+        this.name = name;
+    }
+    
+    public String getName()
+    {
+        return name;
+    }
+    
     @Override
     public String toString()
     {
@@ -25,21 +37,7 @@ public class TableRecord<T extends Table> {
         builder.append("checksum ").append(checksum).append("\n");
         builder.append("offset   ").append(offset).append("\n");
         builder.append("length   ").append(length).append("\n");
+        builder.append("name     ").append(name).append("\n");
         return builder.toString();
-    }
-    
-    public void setTable(T t)
-    {
-        this.table = t;
-    }
-    
-    public T getTable(Class<T> clazz)
-    {
-        if(table == null)
-            return null;
-        if(clazz.isAssignableFrom(table.getClass()))
-            return (T)table;
-        else
-            throw new UnsupportedOperationException("Not assignable " +clazz.getSimpleName());
-    }
+    }    
 }

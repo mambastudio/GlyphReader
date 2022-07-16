@@ -5,9 +5,9 @@
  */
 package glyphreader.table;
 
+import glyphreader.map.AbstractTable;
 import glyphreader.read.BinaryMapReader;
 import glyphreader.map.Kern0Table;
-import glyphreader.map.Table;
 import static glyphreader.map.Table.TableType.KERN;
 import glyphreader.map.TableList;
 import glyphreader.map.TableRecord;
@@ -17,27 +17,25 @@ import java.util.ArrayList;
  *
  * @author jmburu
  */
-public class KernTable implements Table{
+public class KernTable extends AbstractTable{
     
     public ArrayList<Kern0Table> kern;
     
-    private final TableRecord record;
-    
-    public KernTable()
+    public KernTable(TableRecord record)
     {
-        record = new TableRecord();
+        super(record);
         kern = new ArrayList<>();
     }
     
     @Override
-    public void read(BinaryMapReader file, TableList tables)
+    public boolean read(BinaryMapReader file, TableList tables)
     { 
         int tableOffset = record.offset;
         file.seek(tableOffset);
         
         int version = file.getUint16(); // version 0
         int nTables = file.getUint16();
-
+        
         System.out.format("Kern Table version: %s \n", version);
         System.out.format("Kern nTables: %s \n", nTables);
         for (int i = 0; i < nTables; i++) {
@@ -60,6 +58,7 @@ public class KernTable implements Table{
                 this.kern.add(kern);
             }
         }
+        return true;
     }
 
     @Override

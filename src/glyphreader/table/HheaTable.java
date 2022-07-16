@@ -5,9 +5,9 @@
  */
 package glyphreader.table;
 
+import glyphreader.map.AbstractTable;
 import glyphreader.map.TableRecord;
 import glyphreader.read.BinaryMapReader;
-import glyphreader.map.Table;
 import static glyphreader.map.Table.TableType.HHEA;
 import glyphreader.map.TableList;
 
@@ -15,7 +15,7 @@ import glyphreader.map.TableList;
  *
  * @author jmburu
  */
-public class HheaTable implements Table{
+public class HheaTable extends AbstractTable{
     public double version = 0;
     public int ascent = 0;
     public int descent = 0;
@@ -30,15 +30,14 @@ public class HheaTable implements Table{
     public int metricDataFormat = 0;
     public int numOfHorMetrics = 0;
     
-    private final TableRecord record;
     
-    public HheaTable()
+    public HheaTable(TableRecord record)
     {
-        record = new TableRecord();
+        super(record);        
     }
     
     @Override
-    public void read(BinaryMapReader file, TableList tables)
+    public boolean read(BinaryMapReader file, TableList tables)
     {
                 
         int tableOffset = record.offset;
@@ -61,8 +60,7 @@ public class HheaTable implements Table{
         file.getInt16(); // reserved
         this.metricDataFormat = file.getInt16();
         this.numOfHorMetrics = file.getUint16();
-        
-        //System.out.println(this);
+        return true;
     }
     
     @Override

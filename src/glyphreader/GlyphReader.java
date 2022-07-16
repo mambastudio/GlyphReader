@@ -20,7 +20,7 @@ public class GlyphReader {
     public static void main(String[] args) {
         // TODO code application logic here
         
-        TrueTypeFont font = new TrueTypeFont(Paths.get("C:\\Users\\user\\Downloads", "FontAwesome.ttf"));
+        TrueTypeFont font = new TrueTypeFont(Paths.get("C:\\Users\\user\\Downloads\\PT_Serif", "PTSerif-Regular.ttf"));
         Glyph glyph = font.readGlyph(4);
         
     }

@@ -6,7 +6,7 @@
 package glyphreader.table;
 
 import static glyphreader.FUtility.standardNames;
-import glyphreader.map.Table;
+import glyphreader.map.AbstractTable;
 import static glyphreader.map.Table.TableType.POST;
 import glyphreader.map.TableList;
 import glyphreader.map.TableRecord;
@@ -17,7 +17,7 @@ import java.util.Arrays;
  *
  * @author user
  */
-public class PostTable implements Table{
+public class PostTable extends AbstractTable{
     public double version = 0; 
     public double italicAngle = 0;
     public int underlinePosition = 0;
@@ -30,17 +30,15 @@ public class PostTable implements Table{
     
     //targeting version 2.0   
     public String[] stringData = null;
-    
-    private final TableRecord record;
-    
-    public PostTable()
+        
+    public PostTable(TableRecord record)
     {
-        this.record = new TableRecord();
+        super(record);
     }
    
     
     @Override
-    public void read(BinaryMapReader file, TableList tables) {
+    public boolean read(BinaryMapReader file, TableList tables) {
                
         int tableOffset = record.offset;
         file.seek(tableOffset);
@@ -81,11 +79,12 @@ public class PostTable implements Table{
             default:
                 break;
         }  
+        return true;
     }    
 
     @Override
     public TableRecord getRecord() {
-        return new TableRecord();
+        return record;
     }
 
     @Override

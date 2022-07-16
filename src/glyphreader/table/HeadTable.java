@@ -8,17 +8,17 @@ package glyphreader.table;
 import glyphreader.map.TableRecord;
 import glyphreader.read.BinaryMapReader;
 import glyphreader.FUtility;
-import glyphreader.map.Table;
+import glyphreader.core.FBound;
+import glyphreader.map.AbstractTable;
 import static glyphreader.map.Table.TableType.HEAD;
 import glyphreader.map.TableList;
 import java.util.Date;
-import java.util.HashMap;
 
 /**
  *
  * @author jmburu
  */
-public class HeadTable implements Table{
+public class HeadTable extends AbstractTable{
     public int  version             = 0;
     public double  fontRevision     = 0;
     public int  checksumAdjustment  = 0;
@@ -37,15 +37,14 @@ public class HeadTable implements Table{
     public int  indexToLocFormat    = 0;
     public int  glyphDataFormat     = 0;
     
-    TableRecord record;
-    
-    public HeadTable()
+   
+    public HeadTable(TableRecord record)
     {
-        record = new TableRecord();
+        super(record);        
     }
     
     @Override
-    public void read(BinaryMapReader file, TableList tables)
+    public boolean read(BinaryMapReader file, TableList tables)
     {       
         int tableOffset = record.offset;
         file.seek(tableOffset);
@@ -68,6 +67,8 @@ public class HeadTable implements Table{
         this.fontDirectionHint = file.getInt16();
         this.indexToLocFormat = file.getInt16();
         this.glyphDataFormat = file.getInt16();
+        
+        return true;
     }
     
     @Override
@@ -93,10 +94,15 @@ public class HeadTable implements Table{
         builder.append("glyphDataFormat     = ").append(glyphDataFormat);        
         return builder.toString();
     }
+    
+    public FBound getBound()
+    {
+        return new FBound(xMin, yMin, xMax, yMax);
+    }
 
     @Override
     public TableRecord getRecord() {
-        return new TableRecord();
+        return record;
     }
 
     @Override

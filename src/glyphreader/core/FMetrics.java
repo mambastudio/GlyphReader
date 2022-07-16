@@ -20,7 +20,7 @@ public class FMetrics
     public FMetrics(TrueTypeFont ttf)
     {
         this.ttf = ttf;
-        this.table = ttf.hheaTable;
+        this.table = null;//ttf.hheaTable;
     }
     
     public double getAscent()

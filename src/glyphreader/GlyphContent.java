@@ -9,6 +9,10 @@ import glyphreader.core.FBound;
 import glyphreader.core.FPoint2i;
 import glyphreader.map.CMap;
 import glyphreader.map.Kern0Table;
+import glyphreader.map.Table;
+import glyphreader.table.CMapTable;
+import glyphreader.table.HeadTable;
+import glyphreader.table.KernTable;
 import java.util.ArrayList;
 
 /**
@@ -47,32 +51,35 @@ public class GlyphContent
     
     public FBound getGlyphBound()
     {
-        return new FBound(ttf.headTable.xMin, ttf.headTable.yMin, ttf.headTable.xMax, ttf.headTable.yMax);
+        return ttf.getBound();
     }
     
     public double getUnitsPerEm()
     {
-        return ttf.headTable.unitsPerEm;
+        return ttf.getTableList().getTable(HeadTable.class).unitsPerEm;
     }
     
     public Kern0Table getKern0Table(int index)
     {
-        return ttf.kernTable.kern.get(index);
+        return ttf.getTableList().getTable(KernTable.class).kern.get(index);
     }
     
     public int getKernSize()
-    {
-        return ttf.kernTable.kern.size();
+    {        
+        if(ttf.getTableList().containsTable(Table.TableType.KERN))
+            return ttf.getTableList().getTable(KernTable.class).kern.size();
+        else
+            return 0;
     }
     
     public CMap getCMap(int index)
     {
-        return ttf.cmapTable.cmaps.get(index);
+        return ttf.getTableList().getTable(CMapTable.class).cmaps.get(index);
     }
     
     public int getCMapSize()
     {
-        return ttf.cmapTable.cmaps.size();
+        return ttf.getTableList().getTable(CMapTable.class).cmaps.size();
     }
     
     public FPoint2i getHorizontalMetrics(int glyphIndex) 

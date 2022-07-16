@@ -8,8 +8,8 @@ package glyphreader.table;
 import glyphreader.map.TableRecord;
 import glyphreader.read.BinaryMapReader;
 import glyphreader.FUtility;
+import glyphreader.map.AbstractTable;
 import glyphreader.map.NameRecord;
-import glyphreader.map.Table;
 import static glyphreader.map.Table.TableType.NAME;
 import glyphreader.map.TableList;
 
@@ -17,18 +17,17 @@ import glyphreader.map.TableList;
  *
  * @author jmburu
  */
-public class NameTable implements Table{
+public class NameTable extends AbstractTable{
     
-    public NameRecord[] nameRecords = null;    
-    private final TableRecord record;
+    public NameRecord[] nameRecords = null;   
     
-    public NameTable()
+    public NameTable(TableRecord record)
     {
-        record = new TableRecord();
+        super(record);
     }
     
     @Override
-    public void read(BinaryMapReader file, TableList tables)
+    public boolean read(BinaryMapReader file, TableList tables)
     {                
         int tableOffset = record.offset;
         file.seek(tableOffset);
@@ -43,23 +42,23 @@ public class NameTable implements Table{
         
         for (int i = 0; i < count; i++) 
         {
-            NameRecord record = new NameRecord();
-            record.platformID = file.getUint16();
-            record.platformSpecificID = file.getUint16();
-            record.languageID = file.getUint16();
-            record.nameID = file.getUint16();
-            record.length = file.getUint16();
-            record.offset = file.getUint16();
-            int old = file.seek(tableOffset + stringOffset + record.offset);
+            NameRecord nameRecord = new NameRecord();
+            nameRecord.platformID = file.getUint16();
+            nameRecord.platformSpecificID = file.getUint16();
+            nameRecord.languageID = file.getUint16();
+            nameRecord.nameID = file.getUint16();
+            nameRecord.length = file.getUint16();
+            nameRecord.offset = file.getUint16();
+            int old = file.seek(tableOffset + stringOffset + nameRecord.offset);
             String name;
-            if (record.platformID == 0 || record.platformID == 3) {
-                name = file.getUnicodeString(record.length);
+            if (nameRecord.platformID == 0 || nameRecord.platformID == 3) {
+                name = file.getUnicodeString(nameRecord.length);
             } else {
-                name = file.getString(record.length);
+                name = file.getString(nameRecord.length);
             }
-            record.name = name;
+            nameRecord.name = name;
             
-            nameRecords[i] = record;            
+            nameRecords[i] = nameRecord;            
             file.seek(old);
 
             /*
@@ -79,7 +78,7 @@ public class NameTable implements Table{
             }
             */
         }
-        
+        return true;
     }
     
     @Override
@@ -87,9 +86,9 @@ public class NameTable implements Table{
     {
         StringBuilder builder = new StringBuilder();
         builder.append("table name: ").append("\n");
-        for(NameRecord record : nameRecords)
+        for(NameRecord nameRecord : nameRecords)
         {
-            builder.append(record).append("\n");
+            builder.append(nameRecord).append("\n");
         }
         return builder.toString().trim();
     } 

@@ -5,9 +5,9 @@
  */
 package glyphreader.table;
 
+import glyphreader.Glyph;
 import glyphreader.map.AbstractTable;
-import glyphreader.map.HmtxData;
-import static glyphreader.map.Table.TableType.HMTX;
+import static glyphreader.map.Table.TableType.GLYF;
 import glyphreader.map.TableList;
 import glyphreader.map.TableRecord;
 import glyphreader.read.BinaryMapReader;
@@ -15,24 +15,22 @@ import java.util.ArrayList;
 
 /**
  *
- * @author jmburu
+ * @author user
  */
-public class HmtxTable extends AbstractTable{
-    public ArrayList<HmtxData> hmtxData = null;
-    
-    public HmtxTable(TableRecord record)
-    {
-        super(record);
-        hmtxData = new ArrayList();        
-    }
+public class GlyfTable extends AbstractTable{
 
+    public ArrayList<Glyph> glyphs;
+    
+    public GlyfTable(TableRecord record)
+    {
+        super(record);       
+    }
+    
     @Override
     public boolean read(BinaryMapReader file, TableList tables) {
-        
         int tableOffset = record.offset;
         file.seek(tableOffset);
         
-        //for
         return false;
     }
 
@@ -43,6 +41,7 @@ public class HmtxTable extends AbstractTable{
 
     @Override
     public TableType getType() {
-        return HMTX;
+        return GLYF;
     }
+    
 }

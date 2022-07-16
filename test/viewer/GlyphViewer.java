@@ -126,7 +126,7 @@ public class GlyphViewer extends Application{
     
     public void initDraw(ResizeableCanvas renderCanvas)
     {
-        TrueTypeFont ttf = new TrueTypeFont(Paths.get("C:\\Users\\jmburu\\Downloads\\Noto_Serif", "NotoSerif-Regular.ttf"));
+        TrueTypeFont ttf = new TrueTypeFont(Paths.get("C:\\Users\\user\\Downloads\\PT_Serif", "PTSerif-Regular.ttf"));
         glyphList = new GlyphContent(ttf);
         
         renderCanvas.setDrawGlyph(this.drawText("First try of javafx custom glyphs", glyphList, 70, 0, 125));        
@@ -134,36 +134,12 @@ public class GlyphViewer extends Application{
         
     }
     
-    public Consumer<GraphicsContext> drawText(String text, GlyphContent glyphList, final double size, final double x, final double y)
+    public Consumer<GraphicsContext> drawText(String text, GlyphContent glyphList, final int size, final double x, final double y)
     {
         return (ctx)->{
             
-            double sx = 0;
-            double sy = 0;
-            this.resetKern();
-            
-            for (int i = 0; i < text.length(); i++) {
-                int index = this.mapCode(text.charAt(i));
-                FPoint2i metrics = glyphList.getHorizontalMetrics(index);
-                
-                FPoint2d kern = this.nextKern(index);
-                //this.log("Metrics for %s code %s index %s: %s %s kern: %s,%s", text.charAt(i),
-                //    text.charAt(i), index, metrics.advanceWidth, metrics.leftSideBearing,
-                //    kern.x, kern.y);
-                ctx.save();
-                ctx.translate(x, y);
-                this.scale(ctx, size);
-                ctx.beginPath();
-                if(this.drawGlyph(glyphList.get(index), ctx, (int)(sx + kern.x),//- metrics.leftSideBearing, 
-                    (int)(sy + kern.y)))
-                   ctx.fill();
-                ctx.restore();
-                
-                sx += metrics.x; //metrics.advanceWidth;
-            }
-            
-            
-            
+            FXString2D draw = new FXString2D(ctx, glyphList, x, y);
+            draw.drawString(text, size);
         };
     }
     
@@ -176,7 +152,7 @@ public class GlyphViewer extends Application{
             double fwidth = fbounds.getWidth();
             double fheight = fbounds.getHeight(); 
             
-            double fscale = 64 / glyphList.getUnitsPerEm();
+            double fscale = 18 / glyphList.getUnitsPerEm();
                         
             double pixID = -fwidth; //added in the for loop to become 0
             
@@ -217,7 +193,7 @@ public class GlyphViewer extends Application{
         
     }
     
-    public void resetKern() {
+    public void resetKern() {        
         for (int i = 0; i < glyphList.getKernSize(); i++) {
             glyphList.getKern0Table(i).reset();
         }
@@ -247,13 +223,4 @@ public class GlyphViewer extends Application{
         return index;
     }
     
-    public void drawSingleGlyph(GraphicsContext ctx, int glyphIndex,
-        int x, int y, int size) 
-    {
-        ctx.save();
-        ctx.translate(x, y);
-        this.scale(ctx, size);
-        this.drawGlyph(glyphList.get(glyphIndex), ctx, 0, 0);
-        ctx.restore();
-    }
 }

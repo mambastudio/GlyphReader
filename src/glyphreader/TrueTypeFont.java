@@ -10,18 +10,13 @@ import glyphreader.core.FMatrix;
 import glyphreader.core.FPoint2d;
 import glyphreader.core.FBound;
 import glyphreader.core.FPoint2i;
-import glyphreader.map.Table;
 import glyphreader.map.Table.TableType;
+import glyphreader.map.TableDirectory;
 import glyphreader.map.TableList;
-import glyphreader.table.CMapTable;
 import glyphreader.table.HeadTable;
 import glyphreader.table.HheaTable;
-import glyphreader.table.NameTable;
-import glyphreader.map.TableRecord;
-import glyphreader.table.HmtxTable;
-import glyphreader.table.KernTable;
+import glyphreader.table.LocaTable;
 import glyphreader.table.MaxpTable;
-import glyphreader.table.PostTable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -31,16 +26,11 @@ import java.util.Collections;
  *
  * @author jmburu
  */
-public final class TrueTypeFont {
-    private BinaryMapReader file = null;
+public class TrueTypeFont {
+    public BinaryMapReader file = null;  
     
-    TableList tables = null;
-    
-    public int scalarType = 0;
-    public int searchRange = 0;
-    public int entrySelector = 0;
-    public int rangeShift = 0;
-  
+    TableDirectory directory;
+    TableList tables;
     
     public int length;
     
@@ -49,151 +39,29 @@ public final class TrueTypeFont {
         if(!Files.exists(path))
             throw new UnsupportedOperationException("File does not exist: " +path);
         this.file = new BinaryMapReader(path);
-        this.tables = new TableList();
-                
-        //read offset of tables
-        readOffsetTables();
         
-        //read table properties now
-        tables.getTables().forEach(table -> {
-            table.read(file, tables);
-        });
+        //read the manifest of table
+        this.directory = new TableDirectory(file);
+        //read table offsetss
+        this.tables = new TableList(directory);
+        this.tables.parseTables();
+                
         
         length = glyphCount();
         System.out.println("glyph count " +length);
     }
     
-    public void readOffsetTables()
-    {        
-        scalarType = file.getUint32();
-        int numTables = file.getUint16();
         
-        this.searchRange = file.getUint16();
-        this.entrySelector = file.getUint16();
-        this.rangeShift = file.getUint16();
-        
-        for(int i = 0 ; i < numTables; i++ ) {
-            //create table
-            String tag = file.getString(4);
-            Table table = this.generateTable(tag);
-            
-            //process supported tables
-            if(table != null)
-            {
-                TableRecord recordTable = table.getRecord();
-                recordTable.checksum = file.getUint32();
-                recordTable.offset = file.getUint32();
-                recordTable.length = file.getUint32();
-            }
-        }
-        
-        //head table should always be there
-        if(!tables.containsTable(TableType.HEAD))
-            throw new UnsupportedOperationException("No head table");
-    }
-    
-    //if this tables exists in string, instantiate them
-    protected Table generateTable(String string)
-    {
-        if(string.equals(TableType.CMAP.name().toLowerCase()))
-        {
-            CMapTable table = new CMapTable();
-            tables.addTable(table);
-            return table;
-        }
-        else if(string.equals(TableType.HEAD.name().toLowerCase()))
-        {
-            HeadTable table = new HeadTable();
-            tables.addTable(table);
-            return table;
-        }
-        else if(string.equals(TableType.HHEA.name().toLowerCase()))
-        {
-            HheaTable table = new HheaTable();
-            tables.addTable(table);
-            return table;
-        }
-        else if(string.equals(TableType.HMTX.name().toLowerCase()))
-        {
-            HmtxTable table = new HmtxTable();
-            tables.addTable(table);
-            return table;
-        }
-        else if(string.equals(TableType.KERN.name().toLowerCase()))
-        {
-            KernTable table = new KernTable();
-            tables.addTable(table);
-            return table;
-        }
-        else if(string.equals(TableType.MAXP.name().toLowerCase()))
-        {
-            MaxpTable table = new MaxpTable();
-            tables.addTable(table);
-            return table;
-        }
-        else if(string.equals(TableType.NAME.name().toLowerCase()))
-        {
-            NameTable table = new NameTable();
-            tables.addTable(table);
-            return table;
-        }
-        else if(string.equals(TableType.POST.name().toLowerCase()))
-        {
-            PostTable table = new PostTable();
-            tables.addTable(table);
-            return table;
-        }
-        return null;
-    }
-    
-    //to verify if the unsigned values are read correct
-    public int calculateTableChecksum(BinaryMapReader file, int offset, int length)
-    {
-        int old = file.seek(offset);
-        int sum = 0;
-        int nlongs = ((length + 3) / 4);
-        while(nlongs>0 ) {
-            sum = (sum + file.getUint32() & 0xffffffff);
-            nlongs--;
-        }
-        
-        file.seek(old);
-        return sum;
-    }
-    
     public int glyphCount() {
         FUtility.assertCheck(tables.containsTable(TableType.MAXP), "no maxp");
-        int old = this.file.seek(tables.getTableRecord(TableType.MAXP).offset + 4);
-        int count = this.file.getUint16();
-        this.file.seek(old);
-        return count;
+        return tables.getTable(MaxpTable.class).numGlyphs;
     }
     
     
     public int getGlyphOffset(int index) {
-        FUtility.assertCheck(tables.containsTable(TableType));
-        TableRecord table = tables.get("loca");
-        
-        int offset, old, next;        
-        if (headTable.indexToLocFormat == 1) {
-            old = file.seek(table.offset + index * 4);
-            offset = file.getUint32();
-            next = file.getUint32();
-        } else {            
-            old = file.seek(table.offset + index * 2);
-            offset = file.getUint16() * 2;
-            next = file.getUint16() * 2;
-        }
-
-        file.seek(old);
-        if (offset == next) {
-            // indicates glyph has no outline( eg space)
-            return 0;
-        }
-
-        //this.log("Offset for glyph index %s is %s", index, offset);
-
-        return offset + this.tables.get("glyf").offset;
+               
+        FUtility.assertCheck(tables.containsTable(TableType.LOCA));                 
+        return tables.getTable(LocaTable.class).getGlyphOffset(index);
     }
     
     public Glyph readGlyph(int index)
@@ -201,12 +69,12 @@ public final class TrueTypeFont {
         int offset = this.getGlyphOffset(index);
         
         if (offset == 0 ||
-            offset >= this.tables.get("glyf").offset + this.tables.get("glyf").length) {
+            offset >= tables.getTableRecord(TableType.GLYF).offset + tables.getTableRecord(TableType.GLYF).length) {
             return null;
         }
 
-        FUtility.assertCheck(offset >= this.tables.get("glyf").offset);
-        FUtility.assertCheck(offset < this.tables.get("glyf").offset + this.tables.get("glyf").length);
+        FUtility.assertCheck(offset >= tables.getTableRecord(TableType.GLYF).offset);
+        FUtility.assertCheck(offset < tables.getTableRecord(TableType.GLYF).offset + tables.getTableRecord(TableType.GLYF).length);
 
         file.seek(offset);
         
@@ -390,27 +258,29 @@ public final class TrueTypeFont {
     
     public FBound getBound()
     {
-        return new FBound(headTable.xMin, headTable.yMin, headTable.xMax, headTable.yMax);
+        return tables.getTable(HeadTable.class).getBound();       
     }
     
     public FPoint2i getHorizontalMetrics(int glyphIndex) 
     {                
         if(tables.containsTable(TableType.HMTX))
         {
-            int old = file.seek(this.tables.getTableRecords());  //offset + 4);
-            int offset = this.tables.get("hmtx").offset;
+            int old = file.
+                    seek(
+                    tables.getTableRecord(TableType.HMTX).offset + 4);  
+            int offset = tables.getTableRecord(TableType.HMTX).offset;
             int advanceWidth, leftSideBearing;
-            if (glyphIndex < this.hheaTable.numOfHorMetrics) {
+            if (glyphIndex < tables.getTable(HheaTable.class).numOfHorMetrics) {
                 offset += glyphIndex * 4;
                 old = this.file.seek(offset);
                 advanceWidth = file.getUint16();
                 leftSideBearing = file.getInt16();
             } else {
                 // read the last entry of the hMetrics array
-                old = file.seek(offset + (this.hheaTable.numOfHorMetrics - 1) * 4);
+                old = file.seek(offset + (tables.getTable(HheaTable.class).numOfHorMetrics - 1) * 4);
                 advanceWidth = file.getUint16();
-                file.seek(offset + this.hheaTable.numOfHorMetrics * 4 +
-                    2 * (glyphIndex - this.hheaTable.numOfHorMetrics));
+                file.seek(offset + tables.getTable(HheaTable.class).numOfHorMetrics * 4 +
+                    2 * (glyphIndex - tables.getTable(HheaTable.class).numOfHorMetrics));
                 leftSideBearing = file.getFword();
             }
  
@@ -418,5 +288,10 @@ public final class TrueTypeFont {
             return new FPoint2i(advanceWidth, leftSideBearing); 
         }
         return null;
+    }
+    
+    public TableList getTableList()
+    {
+        return this.tables;
     }
 }
