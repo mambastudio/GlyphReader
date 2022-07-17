@@ -5,11 +5,11 @@
  */
 package glyphreader.table;
 
-import glyphreader.map.TableRecord;
+import glyphreader.record.TableRecord;
 import glyphreader.read.BinaryMapReader;
 import glyphreader.FUtility;
 import glyphreader.map.AbstractTable;
-import glyphreader.map.NameRecord;
+import glyphreader.record.NameRecord;
 import static glyphreader.map.Table.TableType.NAME;
 import glyphreader.map.TableList;
 

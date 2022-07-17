@@ -21,7 +21,7 @@ public class GlyphReader {
         // TODO code application logic here
         
         TrueTypeFont font = new TrueTypeFont(Paths.get("C:\\Users\\user\\Downloads\\PT_Serif", "PTSerif-Regular.ttf"));
-        Glyph glyph = font.readGlyph(4);
+        Glyph glyph = font.getGlyph(4);
         
     }
     

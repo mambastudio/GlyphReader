@@ -7,10 +7,8 @@ package viewer;
 
 import glyphreader.core.FBound;
 import glyphreader.Glyph;
-import glyphreader.GlyphContent;
 import glyphreader.core.FPoint2d;
 import glyphreader.TrueTypeFont;
-import glyphreader.core.FPoint2i;
 import glyphreader.map.CMap;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
@@ -29,7 +27,7 @@ import javafx.stage.Stage;
  */
 public class GlyphViewer extends Application{
     
-    private GlyphContent glyphList;
+    private TrueTypeFont ttf;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -126,37 +124,36 @@ public class GlyphViewer extends Application{
     
     public void initDraw(ResizeableCanvas renderCanvas)
     {
-        TrueTypeFont ttf = new TrueTypeFont(Paths.get("C:\\Users\\user\\Downloads\\PT_Serif", "PTSerif-Regular.ttf"));
-        glyphList = new GlyphContent(ttf);
-        
-        renderCanvas.setDrawGlyph(this.drawText("First try of javafx custom glyphs", glyphList, 70, 0, 125));        
+        ttf = new TrueTypeFont(Paths.get("C:\\Users\\user\\Downloads\\PT_Serif", "PTSerif-Regular.ttf"));
+                
+        renderCanvas.setDrawGlyph(this.drawText("First try of javafx custom glyphs", ttf, 70, 0, 125));        
         //renderCanvas.setDrawGlyph(this.drawAllGlyphs(renderCanvas, glyphList));
         
     }
     
-    public Consumer<GraphicsContext> drawText(String text, GlyphContent glyphList, final int size, final double x, final double y)
+    public Consumer<GraphicsContext> drawText(String text, TrueTypeFont ttf, final int size, final double x, final double y)
     {
         return (ctx)->{
             
-            FXString2D draw = new FXString2D(ctx, glyphList, x, y);
+            FXString2D draw = new FXString2D(ctx, ttf, x, y);
             draw.drawString(text, size);
         };
     }
     
     public Consumer<GraphicsContext> drawAllGlyphs(
             ResizeableCanvas renderCanvas, 
-            GlyphContent glyphList)
+            TrueTypeFont ttf)
     {
         return (ctx)->{
-            FBound fbounds = glyphList.getGlyphBound();
+            FBound fbounds = ttf.getBound();
             double fwidth = fbounds.getWidth();
             double fheight = fbounds.getHeight(); 
             
-            double fscale = 18 / glyphList.getUnitsPerEm();
+            double fscale = 18 / ttf.getUnitsPerEm();
                         
             double pixID = -fwidth; //added in the for loop to become 0
             
-            for(int i = 0; i<glyphList.size(); i++)
+            for(int i = 0; i<ttf.glyphCount(); i++)
             {
                 pixID += fwidth; 
                 int x = (int) (pixID % (renderCanvas.getWidth()/fscale));
@@ -178,7 +175,7 @@ public class GlyphViewer extends Application{
                 ctx.setFill(Color.BLACK);
                 ctx.beginPath();
                 
-                if (drawGlyph(glyphList.get(i), ctx, 0, 0)) {
+                if (drawGlyph(ttf.getGlyph(i), ctx, 0, 0)) {
                     ctx.fill();
                     
                 }
@@ -189,21 +186,21 @@ public class GlyphViewer extends Application{
     
     private void scale(GraphicsContext ctx, double size)
     {
-        ctx.scale(size / this.glyphList.getUnitsPerEm(), -size / this.glyphList.getUnitsPerEm());
+        ctx.scale(size / this.ttf.getUnitsPerEm(), -size / this.ttf.getUnitsPerEm());
         
     }
     
     public void resetKern() {        
-        for (int i = 0; i < glyphList.getKernSize(); i++) {
-            glyphList.getKern0Table(i).reset();
+        for (int i = 0; i < ttf.getKern0TableSize(); i++) {
+            ttf.getKern0Table(i).reset();
         }
     }
 
     public FPoint2d nextKern(int glyphIndex) {
         FPoint2d pt;
         double x = 0, y = 0;
-        for (int i = 0; i < glyphList.getKernSize(); i++) {
-            pt = glyphList.getKern0Table(i).get(glyphIndex);
+        for (int i = 0; i < ttf.getKern0TableSize(); i++) {
+            pt = ttf.getKern0Table(i).get(glyphIndex);
             x += pt.x;
             y += pt.y;
         }
@@ -212,8 +209,8 @@ public class GlyphViewer extends Application{
     
     public int mapCode(int charCode) {
         int index = 0; 
-        for (int i = 0; i < glyphList.getCMapSize(); i++) {
-            CMap cmap = glyphList.getCMap(index);
+        for (int i = 0; i < ttf.getCMapSize(); i++) {
+            CMap cmap = ttf.getCMap(index);
             index = cmap.map(charCode);
             if (index > 0) {
                 break;

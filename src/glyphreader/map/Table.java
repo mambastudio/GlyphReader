@@ -5,6 +5,7 @@
  */
 package glyphreader.map;
 
+import glyphreader.record.TableRecord;
 import static glyphreader.map.Table.TableType.*;
 import glyphreader.read.BinaryMapReader;
 import glyphreader.table.*;

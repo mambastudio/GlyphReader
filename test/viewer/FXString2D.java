@@ -5,10 +5,10 @@
  */
 package viewer;
 
-import glyphreader.GlyphContent;
+import glyphreader.TrueTypeFont;
 import glyphreader.core.FPoint2d;
-import glyphreader.core.FPoint2i;
 import glyphreader.map.CMap;
+import glyphreader.record.LongHorMetricRecord;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
@@ -17,12 +17,12 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public class FXString2D {
     private final FXGlyphDraw2D glyph2D;     
-    private final GlyphContent glyphList;
+    private final TrueTypeFont ttf;
     
-    public FXString2D(GraphicsContext ctx, GlyphContent glyphList, double tx, double ty)
+    public FXString2D(GraphicsContext ctx, TrueTypeFont ttf, double tx, double ty)
     {
-        this.glyph2D = new FXGlyphDraw2D(ctx, glyphList, tx, ty);
-        this.glyphList = glyphList;        
+        this.glyph2D = new FXGlyphDraw2D(ctx, ttf, tx, ty);
+        this.ttf = ttf;        
     }
     
     public void drawString(String text, int size) 
@@ -33,31 +33,31 @@ public class FXString2D {
 
         for (int i = 0; i < text.length(); i++) {
             int index = this.mapCode(text.charAt(i));
-            FPoint2i metrics = glyphList.getHorizontalMetrics(index);
+            LongHorMetricRecord metrics = ttf.getLongHorMetricRecord(index);
 
             FPoint2d kern = this.nextKern(index);
             //this.log("Metrics for %s code %s index %s: %s %s kern: %s,%s", text.charAt(i),
             //    text.charAt(i), index, metrics.advanceWidth, metrics.leftSideBearing,
             //    kern.x, kern.y);
             glyph2D.drawGlyph(index, 
-                    (int)(sx + kern.x), //- metrics.leftSideBearing,
+                    (int)(sx + kern.x) - metrics.lsb,
                     (int)(sy + kern.y), 
                     size);          
-            sx += metrics.x; //metrics.advanceWidth;
+            sx += metrics.advanceWidth; 
         }      
     }
     
     public void resetKern() {        
-        for (int i = 0; i < glyphList.getKernSize(); i++) {
-            glyphList.getKern0Table(i).reset();
+        for (int i = 0; i < ttf.getKern0TableSize(); i++) {
+            ttf.getKern0Table(i).reset();
         }
     }
 
     public FPoint2d nextKern(int glyphIndex) {
         FPoint2d pt;
         double x = 0, y = 0;
-        for (int i = 0; i < glyphList.getKernSize(); i++) {
-            pt = glyphList.getKern0Table(i).get(glyphIndex);
+        for (int i = 0; i < ttf.getKern0TableSize(); i++) {
+            pt = ttf.getKern0Table(i).get(glyphIndex);
             x += pt.x;
             y += pt.y;
         }
@@ -66,8 +66,8 @@ public class FXString2D {
     
     public int mapCode(int charCode) {
         int index = 0; 
-        for (int i = 0; i < glyphList.getCMapSize(); i++) {
-            CMap cmap = glyphList.getCMap(index);
+        for (int i = 0; i < ttf.getCMapSize(); i++) {
+            CMap cmap = ttf.getCMap(index);
             index = cmap.map(charCode);
             if (index > 0) {
                 break;

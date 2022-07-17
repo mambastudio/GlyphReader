@@ -3,17 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package glyphreader;
-
-import glyphreader.core.FMatrix;
+package glyphreader.record;
 
 /**
  *
  * @author user
  */
-public class Component {
-    public int glyphIndex;
-    public FMatrix matrix;
-    public int destPointIndex;
-    public int srcPointIndex;
+public class LongHorMetricRecord {
+    public int advanceWidth;
+    public int lsb;
 }

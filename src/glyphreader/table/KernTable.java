@@ -10,7 +10,7 @@ import glyphreader.read.BinaryMapReader;
 import glyphreader.map.Kern0Table;
 import static glyphreader.map.Table.TableType.KERN;
 import glyphreader.map.TableList;
-import glyphreader.map.TableRecord;
+import glyphreader.record.TableRecord;
 import java.util.ArrayList;
 
 /**
@@ -19,12 +19,12 @@ import java.util.ArrayList;
  */
 public class KernTable extends AbstractTable{
     
-    public ArrayList<Kern0Table> kern;
+    public ArrayList<Kern0Table> kernList;
     
     public KernTable(TableRecord record)
     {
         super(record);
-        kern = new ArrayList<>();
+        kernList = new ArrayList<>();
     }
     
     @Override
@@ -55,10 +55,20 @@ public class KernTable extends AbstractTable{
                 file.seek(file.tell() + length);
             }
             if (kern != null) {
-                this.kern.add(kern);
+                this.kernList.add(kern);
             }
         }
         return true;
+    }
+    
+    public Kern0Table getKern0Table(int index)
+    {
+        return kernList.get(index);
+    }
+    
+    public int getKern0TableSize()
+    {
+        return kernList.size();
     }
 
     @Override

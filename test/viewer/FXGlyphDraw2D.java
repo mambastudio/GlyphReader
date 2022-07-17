@@ -6,7 +6,7 @@
 package viewer;
 
 import glyphreader.Glyph;
-import glyphreader.GlyphContent;
+import glyphreader.TrueTypeFont;
 import glyphreader.core.FPoint2d;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -17,14 +17,14 @@ import javafx.scene.canvas.GraphicsContext;
 public class FXGlyphDraw2D {
     private final GraphicsContext ctx;
     private final double unitsPerEm;
-    private final GlyphContent glyphList;
+    private final TrueTypeFont ttf;
     private final double tx, ty;
     
-    public FXGlyphDraw2D(GraphicsContext ctx, GlyphContent glyphList, double tx, double ty)
+    public FXGlyphDraw2D(GraphicsContext ctx, TrueTypeFont ttf, double tx, double ty)
     {
         this.ctx = ctx;
-        this.unitsPerEm = glyphList.getUnitsPerEm();
-        this.glyphList = glyphList;
+        this.unitsPerEm = ttf.getUnitsPerEm();
+        this.ttf = ttf;
         this.tx = tx; 
         this.ty = ty;
     }
@@ -102,7 +102,7 @@ public class FXGlyphDraw2D {
         ctx.translate(tx, ty);
         this.scale(ctx, size);
         ctx.beginPath();
-        if(draw(glyphList.get(glyphIndex), x, y))
+        if(draw(ttf.getGlyph(glyphIndex), x, y))
             ctx.fill();        
         ctx.restore();
     }

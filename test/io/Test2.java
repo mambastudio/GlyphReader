@@ -8,7 +8,7 @@ package io;
 import glyphreader.map.Table;
 import glyphreader.map.TableDirectory;
 import glyphreader.map.TableList;
-import glyphreader.map.TableRecord;
+import glyphreader.record.TableRecord;
 import glyphreader.read.BinaryMapReader;
 import java.nio.file.Files;
 import java.nio.file.Path;

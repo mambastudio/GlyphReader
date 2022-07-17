@@ -8,7 +8,7 @@ package glyphreader.table;
 import glyphreader.map.AbstractTable;
 import static glyphreader.map.Table.TableType.MAXP;
 import glyphreader.map.TableList;
-import glyphreader.map.TableRecord;
+import glyphreader.record.TableRecord;
 import glyphreader.read.BinaryMapReader;
 
 /**

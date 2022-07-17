@@ -35,4 +35,9 @@ public class FBound {
     {
         return yMax - yMin;
     }
+    
+    @Override
+    public final String toString() {
+        return String.format("(%.2f, %.2f) to (%.2f, %.2f)", xMin, yMin, xMax, yMax);
+    }   
 }

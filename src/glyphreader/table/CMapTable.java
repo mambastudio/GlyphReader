@@ -6,7 +6,7 @@
 package glyphreader.table;
 
 import glyphreader.map.AbstractTable;
-import glyphreader.map.TableRecord;
+import glyphreader.record.TableRecord;
 import glyphreader.read.BinaryMapReader;
 import glyphreader.map.CMap;
 import static glyphreader.map.Table.TableType.CMAP;

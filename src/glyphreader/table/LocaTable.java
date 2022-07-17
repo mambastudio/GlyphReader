@@ -8,13 +8,16 @@ package glyphreader.table;
 import glyphreader.map.AbstractTable;
 import static glyphreader.map.Table.TableType.LOCA;
 import glyphreader.map.TableList;
-import glyphreader.map.TableRecord;
+import glyphreader.record.TableRecord;
 import glyphreader.read.BinaryMapReader;
 import java.util.ArrayList;
 
 /**
  *
  * @author user
+ * 
+ * You want to know the offset of glyph? You came to the correct place.
+ * 
  */
 public class LocaTable extends AbstractTable {
     
