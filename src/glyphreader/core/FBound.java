@@ -36,6 +36,11 @@ public class FBound {
         return yMax - yMin;
     }
     
+    public FBound copy()
+    {
+        return new FBound(xMin, yMin, xMax, yMax);
+    }
+    
     @Override
     public final String toString() {
         return String.format("(%.2f, %.2f) to (%.2f, %.2f)", xMin, yMin, xMax, yMax);

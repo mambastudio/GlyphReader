@@ -63,6 +63,8 @@ public class GlyfTable extends AbstractTable{
         
         return true;
     }
+    
+    
 
     @Override
     public TableRecord getRecord() {

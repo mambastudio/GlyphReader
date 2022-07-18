@@ -7,6 +7,7 @@ package glyphreader;
 
 import glyphreader.read.BinaryMapReader;
 import glyphreader.core.FBound;
+import glyphreader.core.metrics.FHorizontalMetrics;
 import glyphreader.map.CMap;
 import glyphreader.map.Kern0Table;
 import glyphreader.map.Table.TableType;
@@ -21,12 +22,13 @@ import glyphreader.table.KernTable;
 import glyphreader.table.MaxpTable;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 /**
  *
  * @author jmburu
  */
-public class TrueTypeFont {
+public final class TrueTypeFont {
     public BinaryMapReader file = null;  
     
     TableDirectory directory;
@@ -47,13 +49,25 @@ public class TrueTypeFont {
         this.tables.parseTables();
                         
         length = glyphCount();
-        System.out.println("glyph count " +length);
+        
+        //set horizontal metrics
+        for(int index = 0; index<glyphCount(); index++)
+        {
+            Glyph glyph = tables.getTable(GlyfTable.class).getGlyph(index);
+            if(glyph != null)
+                glyph.setFHorizontalMetrics(this.getFontMetrics());
+        }
+        
+        System.out.println(getTableNamesInTTF());
+       
+            
     }
     
     public Glyph getGlyph(int index)
     {
         FUtility.assertCheck(tables.containsTable(TableType.GLYF), "no glyf table");
-        return tables.getTable(GlyfTable.class).getGlyph(index);
+        Glyph glyph = tables.getTable(GlyfTable.class).getGlyph(index);
+        return glyph;
     }
         
     public int glyphCount() {
@@ -108,5 +122,19 @@ public class TrueTypeFont {
     public TableList getTableList()
     {
         return this.tables;
+    }
+    
+    public ArrayList<String> getTableNamesInTTF()
+    {
+        ArrayList<String> tableNames = new ArrayList();
+        tables.getRecords().forEach(record -> {
+            tableNames.add(record.getName());
+        });
+        return tableNames;
+    }
+    
+    public FHorizontalMetrics getFontMetrics()
+    {
+        return new FHorizontalMetrics(this);
     }
 }

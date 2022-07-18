@@ -5,7 +5,7 @@
  */
 package glyphreader;
 
-import glyphreader.core.FPoint2d;
+import glyphreader.core.metrics.FGlyphMetrics;
 import java.nio.file.Paths;
 
 /**
@@ -20,9 +20,11 @@ public class GlyphReader {
     public static void main(String[] args) {
         // TODO code application logic here
         
-        TrueTypeFont font = new TrueTypeFont(Paths.get("C:\\Users\\user\\Downloads\\PT_Serif", "PTSerif-Regular.ttf"));
-        Glyph glyph = font.getGlyph(4);
+        TrueTypeFont font = new TrueTypeFont(Paths.get("C:\\Users\\jmburu\\Downloads\\Noto_Serif", "NotoSerif-Regular.ttf"));
+        Glyph glyph = font.getGlyph(21);
+        FGlyphMetrics hmetric = glyph.getGlyphMetrics();
         
+        System.out.println(hmetric);
     }
     
 }

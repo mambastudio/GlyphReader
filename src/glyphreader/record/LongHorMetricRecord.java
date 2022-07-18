@@ -12,4 +12,12 @@ package glyphreader.record;
 public class LongHorMetricRecord {
     public int advanceWidth;
     public int lsb;
+    
+    public LongHorMetricRecord copy()
+    {
+        LongHorMetricRecord record = new LongHorMetricRecord();
+        record.advanceWidth = advanceWidth;
+        record.lsb = lsb;
+        return record;
+    }
 }

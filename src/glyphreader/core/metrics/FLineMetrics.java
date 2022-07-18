@@ -3,14 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package glyphreader;
-
-import glyphreader.core.FPoint2d;
+package glyphreader.core.metrics;
 
 /**
  *
- * @author jmburu
+ * @author user
  */
-public class GlyphComponent {
-    public FPoint2d[] points;
+public class FLineMetrics {
+    
 }

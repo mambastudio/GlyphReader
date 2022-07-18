@@ -6,6 +6,7 @@
 package glyphreader.table;
 
 import glyphreader.map.AbstractTable;
+import static glyphreader.map.Table.TableType.GLYF;
 import glyphreader.record.LongHorMetricRecord;
 import static glyphreader.map.Table.TableType.HMTX;
 import glyphreader.map.TableList;
@@ -36,8 +37,13 @@ public class HmtxTable extends AbstractTable{
         if(!hheaTable.isRead())       
             hheaTable.parse(file, tables);
                   
-        MaxpTable maxpTable = tables.getTable(MaxpTable.class);      
+        MaxpTable maxpTable = tables.getTable(MaxpTable.class);     
+        if(!maxpTable.isRead())       
             maxpTable.parse(file, tables);
+            
+        GlyfTable glyfTable = tables.getTable(GlyfTable.class);
+        if(!glyfTable.isRead())       
+            glyfTable.parse(file, tables);
                       
         for (int i = 0; i < maxpTable.numGlyphs; i += 1) {
             // If the font is monospaced, only one entry is needed. This last entry applies to all subsequent glyphs.
@@ -46,6 +52,8 @@ public class HmtxTable extends AbstractTable{
                 lhMetric.advanceWidth = file.getUint16();
                 lhMetric.lsb = file.getInt16();
                 hmtxData.add(lhMetric);
+                if(glyfTable.getGlyph(i) != null)
+                    glyfTable.getGlyph(i).setLongHorMetricRecord(lhMetric);
             }
             else
             {
@@ -55,6 +63,8 @@ public class HmtxTable extends AbstractTable{
                 lhMetric.advanceWidth = hmtxData.get(hheaTable.numOfHorMetrics - 1).advanceWidth; //advance width is same to last long metric value
                 lhMetric.lsb = file.getUint16();
                 hmtxData.add(lhMetric);
+                if(glyfTable.getGlyph(i) != null)
+                    glyfTable.getGlyph(i).setLongHorMetricRecord(lhMetric);
             }
         }          
         return true;

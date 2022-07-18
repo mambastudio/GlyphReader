@@ -71,13 +71,16 @@ public class TableList {
         
     }
     
+    public ArrayList<TableRecord> getRecords()
+    {
+        return records;
+    }
+    
     public void parseTables()
     {
-        for(AbstractTable table : getTables())
-        {
-            if(!table.isRead())
-                table.parse(directory.getFile(), this);
-        }
+        getTables().stream().filter(table -> (!table.isRead())).forEachOrdered(table -> {
+            table.parse(directory.getFile(), this);
+        });
     }
     
     private void addTable(AbstractTable table)
