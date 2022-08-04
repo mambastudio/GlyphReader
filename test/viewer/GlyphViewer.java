@@ -124,7 +124,7 @@ public class GlyphViewer extends Application{
     
     public void initDraw(ResizeableCanvas renderCanvas)
     {
-        ttf = new TrueTypeFont(Paths.get("C:\\Users\\jmburu\\Downloads\\Noto_Serif", "NotoSerif-Regular.ttf"));
+        ttf = new TrueTypeFont(Paths.get("C:\\Users\\user\\Downloads\\Merriweather", "Merriweather-Regular.ttf"));
                 
         //renderCanvas.setDrawGlyph(this.drawText("First try of javafx custom glyphs", ttf, 70, 0, 125));        
         renderCanvas.setDrawGlyph(this.drawAllGlyphs(renderCanvas, ttf));

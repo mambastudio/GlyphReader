@@ -7,6 +7,7 @@ package glyphreader;
 
 import glyphreader.read.BinaryMapReader;
 import glyphreader.core.FBound;
+import glyphreader.core.metrics.FGlyphMetrics;
 import glyphreader.core.metrics.FHorizontalMetrics;
 import glyphreader.map.CMap;
 import glyphreader.map.Kern0Table;
@@ -136,5 +137,10 @@ public final class TrueTypeFont {
     public FHorizontalMetrics getFontMetrics()
     {
         return new FHorizontalMetrics(this);
+    }
+    
+    public FGlyphMetrics getGlyphMetrics(int index)
+    {
+        return new FGlyphMetrics(this, index);
     }
 }

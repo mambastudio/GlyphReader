@@ -44,6 +44,11 @@ public class FGlyphMetrics {
         return metrics.lsb;
     }
     
+    public double rightSideBearing()
+    {
+        return advanceWidth() - leftSideBearing() - (xMax() - xMin());
+    }
+    
     public double xMin()
     {
         return bound.xMin;
@@ -62,6 +67,16 @@ public class FGlyphMetrics {
     public double yMax()
     {
         return bound.yMax;
+    }
+    
+    public double width()
+    {
+        return xMax() - xMin();
+    }
+    
+    public double height()
+    {
+        return yMax() - yMin();
     }
     
     public FBound getBound()

@@ -105,13 +105,33 @@ public class FHorizontalMetrics
         return hheaTable.advanceWidthMax;
     }
     
-    public double glyphWidth()
+    public double glyphMaxWidth()
     {
         return getBound().getWidth();
     }
     
-    public double glyphHeight()
+    public double glyphMaxHeight()
     {
         return getBound().getHeight();
+    }
+    
+    public double glyphXMin()
+    {
+        return getBound().xMin;
+    }
+    
+    public double glyphXMax()
+    {
+        return getBound().xMax;
+    }
+    
+    public double glyphYMin()
+    {
+        return getBound().yMin;
+    }
+    
+    public double glyphYMax()
+    {
+        return getBound().yMax;
     }
 }
