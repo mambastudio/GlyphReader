@@ -44,9 +44,9 @@ public final class TrueTypeFont {
         this.file = new BinaryMapReader(path);
         
         //read the manifest of table
-        this.directory = new TableDirectory(file);
+        this.directory = new TableDirectory(file); 
         //read table offsetss
-        this.tables = new TableList(directory);
+        this.tables = new TableList(directory); System.out.println(getTableNamesInTTF());
         this.tables.parseTables();
                         
         length = glyphCount();
@@ -59,7 +59,7 @@ public final class TrueTypeFont {
                 glyph.setFHorizontalMetrics(this.getFontMetrics());
         }
         
-        System.out.println(getTableNamesInTTF());
+        
        
             
     }

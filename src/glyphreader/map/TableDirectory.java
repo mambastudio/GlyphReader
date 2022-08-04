@@ -38,6 +38,8 @@ public class TableDirectory {
         numTables = file.getUint16();        
         searchRange = file.getUint16();
         entrySelector = file.getUint16();
-        rangeShift = file.getUint16();        
+        rangeShift = file.getUint16();      
+        
+        
     }
 }
