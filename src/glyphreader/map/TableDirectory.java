@@ -6,6 +6,7 @@
 package glyphreader.map;
 
 import glyphreader.read.BinaryMapReader;
+import glyphreader.read.BinaryReader;
 
 /**
  *
@@ -18,15 +19,15 @@ public class TableDirectory {
     public int entrySelector = 0;
     public int rangeShift = 0;
     
-    public BinaryMapReader file;
+    public BinaryReader file;
     
-    public TableDirectory(BinaryMapReader file)
+    public TableDirectory(BinaryReader file)
     {
         this.file = file;
         init();
     }
     
-    public BinaryMapReader getFile()
+    public BinaryReader getFile()
     {
         return file;
     }

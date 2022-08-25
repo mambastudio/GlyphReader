@@ -9,11 +9,14 @@ import glyphreader.read.BinaryMapReader;
 import glyphreader.core.FBound;
 import glyphreader.core.metrics.FGlyphMetrics;
 import glyphreader.core.metrics.FHorizontalMetrics;
+import glyphreader.fonts.notoserif.Resource;
 import glyphreader.map.CMap;
 import glyphreader.map.Kern0Table;
 import glyphreader.map.Table.TableType;
 import glyphreader.map.TableDirectory;
 import glyphreader.map.TableList;
+import glyphreader.read.BinaryBufferReader;
+import glyphreader.read.BinaryReader;
 import glyphreader.record.LongHorMetricRecord;
 import glyphreader.table.CMapTable;
 import glyphreader.table.GlyfTable;
@@ -21,6 +24,7 @@ import glyphreader.table.HeadTable;
 import glyphreader.table.HmtxTable;
 import glyphreader.table.KernTable;
 import glyphreader.table.MaxpTable;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -30,7 +34,7 @@ import java.util.ArrayList;
  * @author jmburu
  */
 public final class TrueTypeFont {
-    public BinaryMapReader file = null;  
+    public BinaryReader file = null;  
     
     TableDirectory directory;
     TableList tables;
@@ -58,10 +62,27 @@ public final class TrueTypeFont {
             if(glyph != null)
                 glyph.setFHorizontalMetrics(this.getFontMetrics());
         }
+    }
+    
+    public TrueTypeFont(Class<?> clazz, String fileName)
+    {
+        this.file = new BinaryBufferReader(Resource.getInputStream(Resource.class, fileName));
         
+        //read the manifest of table
+        this.directory = new TableDirectory(file); 
+        //read table offsetss
+        this.tables = new TableList(directory); System.out.println(getTableNamesInTTF());
+        this.tables.parseTables();
+                        
+        length = glyphCount();
         
-       
-            
+        //set horizontal metrics
+        for(int index = 0; index<glyphCount(); index++)
+        {
+            Glyph glyph = tables.getTable(GlyfTable.class).getGlyph(index);
+            if(glyph != null)
+                glyph.setFHorizontalMetrics(this.getFontMetrics());
+        }
     }
     
     public Glyph getGlyph(int index)

@@ -10,6 +10,7 @@ import glyphreader.FUtility;
 import glyphreader.map.Table.TableType;
 import static glyphreader.map.Table.TableType.HEAD;
 import glyphreader.read.BinaryMapReader;
+import glyphreader.read.BinaryReader;
 import glyphreader.table.MaxpTable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +36,7 @@ public class TableList {
     public final void initTableRecords()
     {
         for(int i = 0 ; i < directory.numTables; i++ ) {            
-            BinaryMapReader file = directory.getFile();
+            BinaryReader file = directory.getFile();
             
             //read table name
             String tag = file.getString(4); 

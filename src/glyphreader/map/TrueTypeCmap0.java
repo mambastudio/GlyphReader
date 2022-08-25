@@ -5,7 +5,7 @@
  */
 package glyphreader.map;
 
-import glyphreader.read.BinaryMapReader;
+import glyphreader.read.BinaryReader;
 import java.util.Arrays;
 
 /**
@@ -16,7 +16,7 @@ public class TrueTypeCmap0 extends CMap {
     public int format = 0;
     public int array[] = new int[256];
 
-    public TrueTypeCmap0(BinaryMapReader file, int length) 
+    public TrueTypeCmap0(BinaryReader file, int length) 
     {
         for (int i = 0; i < 256; i++) {
             int glyphIndex = file.getUint8();

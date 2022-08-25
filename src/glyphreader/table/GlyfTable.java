@@ -15,6 +15,7 @@ import static glyphreader.map.Table.TableType.GLYF;
 import glyphreader.map.TableList;
 import glyphreader.record.TableRecord;
 import glyphreader.read.BinaryMapReader;
+import glyphreader.read.BinaryReader;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -41,7 +42,7 @@ public class GlyfTable extends AbstractTable{
     }
     
     @Override
-    public boolean read(BinaryMapReader file, TableList tables) {
+    public boolean read(BinaryReader file, TableList tables) {
         int tableOffset = record.offset;
         file.seek(tableOffset);
         
@@ -82,7 +83,7 @@ public class GlyfTable extends AbstractTable{
     }
     
     private void readCoords(
-            BinaryMapReader file, 
+            BinaryReader file, 
             char coord, 
             int byteFlag,
             int deltaFlag, 
@@ -115,7 +116,7 @@ public class GlyfTable extends AbstractTable{
         return tables.getTable(LocaTable.class).getGlyphOffset(index);
     }
     
-    private Glyph readGlyph(BinaryMapReader file, TableList tables, int index)
+    private Glyph readGlyph(BinaryReader file, TableList tables, int index)
     {
         int offset = this.getGlyphOffset(tables, index);
         
@@ -148,7 +149,7 @@ public class GlyfTable extends AbstractTable{
         return glyph;
     }
     
-    private void readSimpleGlyph(BinaryMapReader file, Glyph glyph) {
+    private void readSimpleGlyph(BinaryReader file, Glyph glyph) {
         int ON_CURVE = 1,
             X_IS_BYTE = 2,
             Y_IS_BYTE = 4,
@@ -194,7 +195,7 @@ public class GlyfTable extends AbstractTable{
         readCoords(file, 'y', Y_IS_BYTE, Y_DELTA, numPoints, flags, points);
     }
     
-    private void readCompoundGlyph(TableList tables, BinaryMapReader file, Glyph glyph) {
+    private void readCompoundGlyph(TableList tables, BinaryReader file, Glyph glyph) {
         int ARG_1_AND_2_ARE_WORDS = 1,
             ARGS_ARE_XY_VALUES = 2,
             ROUND_XY_TO_GRID = 4,

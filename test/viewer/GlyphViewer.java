@@ -9,6 +9,7 @@ import glyphreader.core.FBound;
 import glyphreader.Glyph;
 import glyphreader.core.FPoint2d;
 import glyphreader.TrueTypeFont;
+import glyphreader.fonts.notoserif.Resource;
 import glyphreader.map.CMap;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
@@ -124,7 +125,7 @@ public class GlyphViewer extends Application{
     
     public void initDraw(ResizeableCanvas renderCanvas)
     {
-        ttf = new TrueTypeFont(Paths.get("C:\\Users\\user\\Downloads\\Merriweather", "Merriweather-Regular.ttf"));
+        ttf = new TrueTypeFont(Resource.class, "NotoSerif-Regular.ttf");
                 
         //renderCanvas.setDrawGlyph(this.drawText("First try of javafx custom glyphs", ttf, 70, 0, 125));        
         renderCanvas.setDrawGlyph(this.drawAllGlyphs(renderCanvas, ttf));

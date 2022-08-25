@@ -12,6 +12,7 @@ import static glyphreader.map.Table.TableType.HMTX;
 import glyphreader.map.TableList;
 import glyphreader.record.TableRecord;
 import glyphreader.read.BinaryMapReader;
+import glyphreader.read.BinaryReader;
 import java.util.ArrayList;
 
 /**
@@ -28,7 +29,7 @@ public class HmtxTable extends AbstractTable{
     }
 
     @Override
-    public boolean read(BinaryMapReader file, TableList tables) {
+    public boolean read(BinaryReader file, TableList tables) {
         
         int tableOffset = record.offset;
         file.seek(tableOffset);

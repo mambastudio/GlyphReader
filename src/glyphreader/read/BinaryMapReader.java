@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  *
  * @author jmburu
  */
-public class BinaryMapReader {
+public class BinaryMapReader implements BinaryReader{
     private FileChannel channel;
     private RandomAccessFile rfile;
     

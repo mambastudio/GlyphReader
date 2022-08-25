@@ -12,6 +12,7 @@ import glyphreader.map.AbstractTable;
 import glyphreader.record.NameRecord;
 import static glyphreader.map.Table.TableType.NAME;
 import glyphreader.map.TableList;
+import glyphreader.read.BinaryReader;
 
 /**
  *
@@ -27,7 +28,7 @@ public class NameTable extends AbstractTable{
     }
     
     @Override
-    public boolean read(BinaryMapReader file, TableList tables)
+    public boolean read(BinaryReader file, TableList tables)
     {                
         int tableOffset = record.offset;
         file.seek(tableOffset);

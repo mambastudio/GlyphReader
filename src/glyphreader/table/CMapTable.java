@@ -13,6 +13,7 @@ import static glyphreader.map.Table.TableType.CMAP;
 import glyphreader.map.TableList;
 import glyphreader.map.TrueTypeCmap0;
 import glyphreader.map.TrueTypeCmap4;
+import glyphreader.read.BinaryReader;
 import java.util.ArrayList;
 
 /**
@@ -32,7 +33,7 @@ public class CMapTable extends AbstractTable{
     }
     
     @Override
-    public boolean read(BinaryMapReader file, TableList tables)
+    public boolean read(BinaryReader file, TableList tables)
     {
         int tableOffset = record.offset;
         file.seek(tableOffset);
@@ -66,7 +67,7 @@ public class CMapTable extends AbstractTable{
         return true;
     }
     
-    private void readCmap(BinaryMapReader file, int offset) {
+    private void readCmap(BinaryReader file, int offset) {
         int oldPos = file.seek(offset);
         
         int format = file.getUint16();

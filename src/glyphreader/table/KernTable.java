@@ -10,6 +10,7 @@ import glyphreader.read.BinaryMapReader;
 import glyphreader.map.Kern0Table;
 import static glyphreader.map.Table.TableType.KERN;
 import glyphreader.map.TableList;
+import glyphreader.read.BinaryReader;
 import glyphreader.record.TableRecord;
 import java.util.ArrayList;
 
@@ -28,7 +29,7 @@ public class KernTable extends AbstractTable{
     }
     
     @Override
-    public boolean read(BinaryMapReader file, TableList tables)
+    public boolean read(BinaryReader file, TableList tables)
     { 
         int tableOffset = record.offset;
         file.seek(tableOffset);

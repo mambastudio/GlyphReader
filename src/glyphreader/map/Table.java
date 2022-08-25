@@ -7,7 +7,7 @@ package glyphreader.map;
 
 import glyphreader.record.TableRecord;
 import static glyphreader.map.Table.TableType.*;
-import glyphreader.read.BinaryMapReader;
+import glyphreader.read.BinaryReader;
 import glyphreader.table.*;
 
 /**
@@ -17,7 +17,7 @@ import glyphreader.table.*;
 public interface Table {
     
     enum TableType{
-        CMAP, HEAD, HHEA, HMTX, KERN, MAXP, NAME, GLYF, POST, LOCA, NULL
+        CMAP, HEAD, HHEA, HMTX, KERN, MAXP, NAME, GLYF, POST, LOCA, OS2, NULL
     };
     
     public static boolean isSupported(String string)
@@ -63,7 +63,7 @@ public interface Table {
     }
     
    
-    public boolean read(BinaryMapReader file, TableList tables);    
+    public boolean read(BinaryReader file, TableList tables);    
     public TableRecord getRecord();   
     public TableType getType();
     

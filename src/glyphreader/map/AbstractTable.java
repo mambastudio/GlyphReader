@@ -7,6 +7,7 @@ package glyphreader.map;
 
 import glyphreader.record.TableRecord;
 import glyphreader.read.BinaryMapReader;
+import glyphreader.read.BinaryReader;
 
 /**
  *
@@ -37,7 +38,7 @@ public abstract class AbstractTable implements Table{
         this.isRead = isRead;
     }
 
-    public void parse(BinaryMapReader file, TableList tables)
+    public void parse(BinaryReader file, TableList tables)
     {
         int old = file.tell();
         setIsRead(read(file, tables));
@@ -46,7 +47,7 @@ public abstract class AbstractTable implements Table{
     }
     
     @Override
-    public abstract boolean read(BinaryMapReader file, TableList tables) ;   
+    public abstract boolean read(BinaryReader file, TableList tables) ;   
     @Override
     public abstract TableType getType();
 }

@@ -10,6 +10,7 @@ import static glyphreader.map.Table.TableType.MAXP;
 import glyphreader.map.TableList;
 import glyphreader.record.TableRecord;
 import glyphreader.read.BinaryMapReader;
+import glyphreader.read.BinaryReader;
 
 /**
  *
@@ -38,7 +39,7 @@ public class MaxpTable extends AbstractTable{
         super(record);
     }
     @Override
-    public boolean read(BinaryMapReader file, TableList tables) {
+    public boolean read(BinaryReader file, TableList tables) {
         int tableOffset = record.offset;
         file.seek(tableOffset);
         

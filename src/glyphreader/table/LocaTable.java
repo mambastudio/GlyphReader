@@ -9,7 +9,7 @@ import glyphreader.map.AbstractTable;
 import static glyphreader.map.Table.TableType.LOCA;
 import glyphreader.map.TableList;
 import glyphreader.record.TableRecord;
-import glyphreader.read.BinaryMapReader;
+import glyphreader.read.BinaryReader;
 import java.util.ArrayList;
 
 /**
@@ -37,7 +37,7 @@ public class LocaTable extends AbstractTable {
     // version where offsets are stored as uLongs. The `head` table specifies which version to use
     // (under indexToLocFormat).
     @Override
-    public boolean read(BinaryMapReader file, TableList tables) {
+    public boolean read(BinaryReader file, TableList tables) {
         
         int tableOffset = record.offset;
         file.seek(tableOffset);

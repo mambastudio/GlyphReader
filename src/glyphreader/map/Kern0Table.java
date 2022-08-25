@@ -7,6 +7,7 @@ package glyphreader.map;
 
 import glyphreader.read.BinaryMapReader;
 import glyphreader.core.FPoint2d;
+import glyphreader.read.BinaryReader;
 import java.util.HashMap;
 
 /**
@@ -20,7 +21,7 @@ public class Kern0Table {
     public HashMap<Integer, Integer> map; 
     int oldIndex = -1;
         
-    public Kern0Table(BinaryMapReader file, boolean vertical, boolean cross)
+    public Kern0Table(BinaryReader file, boolean vertical, boolean cross)
     {
         this.swap = vertical && !cross || !vertical && cross;
         //this.file = file;

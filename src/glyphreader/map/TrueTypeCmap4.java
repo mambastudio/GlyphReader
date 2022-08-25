@@ -5,7 +5,7 @@
  */
 package glyphreader.map;
 
-import glyphreader.read.BinaryMapReader;
+import glyphreader.read.BinaryReader;
 import java.util.HashMap;
 
 /**
@@ -17,9 +17,9 @@ public class TrueTypeCmap4 extends CMap{
     
     private final HashMap<Integer, Integer> cache = new HashMap<>();    
     private final Segment segments[];
-    private final BinaryMapReader file;
+    private final BinaryReader file;
     
-    public TrueTypeCmap4(BinaryMapReader file, int length)
+    public TrueTypeCmap4(BinaryReader file, int length)
     {
         this.file = file; 
         
