@@ -97,7 +97,7 @@ public class HeadTable extends AbstractTable{
     }
     
     public FBound getBound()
-    {
+    {        
         return new FBound(xMin, yMin, xMax, yMax);
     }
 
