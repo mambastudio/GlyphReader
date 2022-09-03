@@ -12,6 +12,7 @@ import static glyphreader.map.Table.TableType.HEAD;
 import glyphreader.read.BinaryMapReader;
 import glyphreader.read.BinaryReader;
 import glyphreader.table.MaxpTable;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class TableList {
             BinaryReader file = directory.getFile();
             
             //read table name
-            String tag = file.getString(4); 
+            String tag = file.getString(4, StandardCharsets.UTF_16); 
             
             //if it's supported, add it to list
             if(Table.isSupported(tag))

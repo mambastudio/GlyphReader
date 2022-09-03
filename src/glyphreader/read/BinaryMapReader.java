@@ -14,6 +14,7 @@ import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -205,19 +206,11 @@ public class BinaryMapReader implements BinaryReader{
         return new String(codePoints, 0, codePoints.length);
     }
 
-    public String getString(int length)
+    public String getString(int length, Charset charset)
     {
         StringBuilder result = new StringBuilder();
         for(int i = 0; i<length; i++)
             result.append(fromCharCode(this.getUint8()));
-        return result.toString();
-    }
-    
-    public String getUnicodeString(int length)
-    {
-        StringBuilder result = new StringBuilder();
-        for(int i = 0; i<length; i++)
-            result.append(fromCharCode(this.getUint16()));
         return result.toString();
     }
     

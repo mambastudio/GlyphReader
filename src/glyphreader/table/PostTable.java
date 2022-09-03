@@ -10,8 +10,8 @@ import glyphreader.map.AbstractTable;
 import static glyphreader.map.Table.TableType.POST;
 import glyphreader.map.TableList;
 import glyphreader.record.TableRecord;
-import glyphreader.read.BinaryMapReader;
 import glyphreader.read.BinaryReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 /**
@@ -68,7 +68,7 @@ public class PostTable extends AbstractTable{
                     
                     if (glyphNameIndex[i] >= standardNames.length) {
                         int nameLength = file.getUint8();
-                        stringData[i]= file.getString(nameLength);
+                        stringData[i]= file.getString(nameLength, StandardCharsets.UTF_16);
                     }
                     else
                         stringData[i] = standardNames[glyphNameIndex[i]];

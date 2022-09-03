@@ -5,6 +5,7 @@
  */
 package glyphreader.read;
 
+import java.nio.charset.Charset;
 import java.util.Date;
 
 /**
@@ -31,7 +32,6 @@ public interface BinaryReader {
     public double get2Dot14();
     public double getFixed();
     public double getVersion16Dot16();
-    public String getString(int length);
-    public String getUnicodeString(int length);
+    public String getString(int length, Charset charset);
     public Date getDate();
 }

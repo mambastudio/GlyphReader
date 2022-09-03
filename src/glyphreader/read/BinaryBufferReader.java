@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
+import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -138,7 +139,8 @@ public class BinaryBufferReader implements BinaryReader{
         return new String(codePoints, 0, codePoints.length);
     }
 
-    public String getString(int length)
+    @Override
+    public String getString(int length, Charset charset)
     {
         StringBuilder result = new StringBuilder();
         for(int i = 0; i<length; i++)
@@ -146,14 +148,7 @@ public class BinaryBufferReader implements BinaryReader{
         return result.toString();
     }
     
-    public String getUnicodeString(int length)
-    {
-        StringBuilder result = new StringBuilder();
-        for(int i = 0; i<length; i++)
-            result.append(fromCharCode(this.getUint16()));
-        return result.toString();
-    }
-    
+    @Override
     public Date getDate() {
         long macTime = getInt64();
         
