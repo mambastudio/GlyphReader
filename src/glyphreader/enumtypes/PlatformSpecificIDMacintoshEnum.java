@@ -9,7 +9,7 @@ package glyphreader.enumtypes;
  *
  * @author jmburu
  */
-public enum PlatformSpecificIDMacintoshEnum {
+public enum PlatformSpecificIDMacintoshEnum implements PlatformSpecificAbstractEnum{
     Roman,
     Japanese,
     Chinese_Traditional,

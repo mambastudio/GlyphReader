@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author jmburu
  */
-public enum LanguageIDsWindowsEnum {   
+public enum LanguageIDsWindowsEnum implements LanguageIDsPlatformAbstractEnum {   
     Afghanistan_Dari(Integer.decode("0x048C"),"Dari","Afghanistan"),
     Afghanistan_Pashto(Integer.decode("0x0463"),"Pashto","Afghanistan"),
     Albania(Integer.decode("0x041C"),"Albanian","Albania"),
@@ -248,6 +248,6 @@ public enum LanguageIDsWindowsEnum {
     @Override
     public String toString()
     {
-        return language+ " " +region;
+        return language+ ", " +region;
     }
 }

@@ -68,7 +68,7 @@ public class PostTable extends AbstractTable{
                     
                     if (glyphNameIndex[i] >= standardNames.length) {
                         int nameLength = file.getUint8();
-                        stringData[i]= file.getString(nameLength, StandardCharsets.UTF_16);
+                        stringData[i]= file.getString(nameLength, StandardCharsets.UTF_8); //Glyph name strings are encoded in ASCII - 8 bit
                     }
                     else
                         stringData[i] = standardNames[glyphNameIndex[i]];
@@ -82,6 +82,11 @@ public class PostTable extends AbstractTable{
         }  
         return true;
     }    
+    
+    public String[] glyphNames()
+    {
+        return stringData;
+    }
 
     @Override
     public TableRecord getRecord() {

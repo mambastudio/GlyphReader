@@ -18,7 +18,7 @@ import glyphreader.map.TableList;
 public class Test3 {
     public static void main(String... args)
     {
-        TrueTypeFont ttf = new TrueTypeFont(Resource.class, "MaterialIcons-Regular.ttf");
+        TrueTypeFont ttf = new TrueTypeFont(Resource.class, "MaterialSymbolsOutlined.ttf");
         TableList tables = ttf.getTableList();
         AbstractTable names = tables.getTable(Table.TableType.NAME);
         System.out.println(names);

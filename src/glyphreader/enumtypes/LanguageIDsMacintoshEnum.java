@@ -9,7 +9,7 @@ package glyphreader.enumtypes;
  *
  * @author jmburu
  */
-public enum LanguageIDsMacintoshEnum {
+public enum LanguageIDsMacintoshEnum implements LanguageIDsPlatformAbstractEnum{
     English,
     French,
     German,

@@ -24,7 +24,6 @@ import glyphreader.table.HeadTable;
 import glyphreader.table.HmtxTable;
 import glyphreader.table.KernTable;
 import glyphreader.table.MaxpTable;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public final class TrueTypeFont {
         //read the manifest of table
         this.directory = new TableDirectory(file); 
         //read table offsetss
-        this.tables = new TableList(directory); System.out.println(getTableNamesInTTF());
+        this.tables = new TableList(directory); //System.out.println(getTableNamesInTTF());
         this.tables.parseTables();
                         
         length = glyphCount();
@@ -71,7 +70,7 @@ public final class TrueTypeFont {
         //read the manifest of table
         this.directory = new TableDirectory(file); 
         //read table offsetss
-        this.tables = new TableList(directory); System.out.println(getTableNamesInTTF());
+        this.tables = new TableList(directory); //System.out.println(getTableNamesInTTF());
         this.tables.parseTables();
                         
         length = glyphCount();

@@ -25,6 +25,8 @@ public interface Table {
         return generate(string) != null;
     }
     
+    
+    
     public static AbstractTable generate(String name)
     {               
         if(name == null)

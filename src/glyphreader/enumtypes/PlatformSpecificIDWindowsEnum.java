@@ -11,7 +11,7 @@ package glyphreader.enumtypes;
  * 
  * 
  */
-public enum PlatformSpecificIDWindowsEnum {
+public enum PlatformSpecificIDWindowsEnum implements PlatformSpecificAbstractEnum{
     Symbol,
     Unicode_BMP,
     ShiftJIS,

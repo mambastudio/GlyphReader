@@ -13,7 +13,7 @@ import java.util.Map;
  * @author jmburu
  */
 
-public enum PlatformSpecificIDUnicodeEnum{
+public enum PlatformSpecificIDUnicodeEnum implements PlatformSpecificAbstractEnum{
     Unicode_1_0(0), 
     Unicode_1_1(1), 
     ISO_OR_IEC_10646 (2),

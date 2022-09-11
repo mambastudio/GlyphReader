@@ -90,10 +90,12 @@ public class BinaryMapReader implements BinaryReader{
         this(file.toURI());
     }
     
+    @Override
     public void rewind(){
         buffer.rewind();
     }
     
+    @Override
     public long length()
     {
         try {
@@ -120,6 +122,7 @@ public class BinaryMapReader implements BinaryReader{
         }
     }
     
+    @Override
     public void close()
     {
         try {
@@ -135,6 +138,7 @@ public class BinaryMapReader implements BinaryReader{
         }
     }
     
+    @Override
     public int seek(int pos) {
         FUtility.assertCheck(pos >= 0 && pos <= this.length());
         int oldPos = this.buffer.position();
@@ -142,16 +146,19 @@ public class BinaryMapReader implements BinaryReader{
         return oldPos;
     }
     
+    @Override
     public int tell() {
         return this.buffer.position();
     }
     
+    @Override
     public int getInt8()
     {
        int signedByte = buffer.get();
        return signedByte;
     }
     
+    @Override
     public int getUint8()
     {
         int unsignedByte = Byte.toUnsignedInt(buffer.get());        
@@ -159,61 +166,73 @@ public class BinaryMapReader implements BinaryReader{
     }
     
         
+    @Override
     public int getUint16() {
         return Short.toUnsignedInt(buffer.getShort());
     }
     
+    @Override
     public int getInt16() {
         return buffer.getShort();
     }
     
+    @Override
     public int getInt32()
     {
         return buffer.getInt();
     }
     
+    @Override
     public int getUint32() {
         return (int)(Integer.toUnsignedLong(buffer.getInt()));
     }
 
+    @Override
     public long getInt64() {
         return buffer.getLong();
     }
                 
+    @Override
     public int getFword() {
         return this.getInt16();
     }
 
+    @Override
     public int getUFword() {
         return this.getUint16();
     }
 
+    @Override
     public double get2Dot14() {
         return this.getInt16() / Math.pow(2, 14);
     }
 
+    @Override
     public double getFixed() {        
         return getInt32()/ Math.pow(2, 16);
     }
     
+    @Override
     public double getVersion16Dot16()
     {
         return getFixed();
     }
     
-    private String fromCharCode(int... codePoints)
+    private String fromCharCode(Charset charset, byte... codePoints)
     {
-        return new String(codePoints, 0, codePoints.length);
+        return new String(codePoints, charset);
     }
 
+    @Override
     public String getString(int length, Charset charset)
     {
         StringBuilder result = new StringBuilder();
         for(int i = 0; i<length; i++)
-            result.append(fromCharCode(this.getUint8()));
+            result.append(fromCharCode(charset, (byte)this.getUint8()));
         return result.toString();
     }
     
+    @Override
     public Date getDate() {
         long macTime = getInt64();
         

@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package glyphreader.record.name;
+package glyphreader.enumtypes;
 
 /**
  *
  * @author jmburu
  */
-public interface PlatformTypeSkeleton {
+public interface PlatformSpecificAbstractEnum {
     
 }

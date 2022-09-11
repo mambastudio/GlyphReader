@@ -32,6 +32,8 @@ public enum NameIDsEnum {
     SampleText,             // 19
     PostScriptFindFontName, // 20
     WWSFamily,              // 21
-    WWSSubfamily            // 22
+    WWSSubfamily,           // 22
     
+    //Font specific names 256 - 32767
+    FontSpecificName
 };
