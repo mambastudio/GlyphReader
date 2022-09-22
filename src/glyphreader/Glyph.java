@@ -8,7 +8,6 @@ package glyphreader;
 import glyphreader.core.FBound;
 import glyphreader.core.FPoint2d;
 import glyphreader.core.metrics.FGlyphMetrics;
-import glyphreader.core.metrics.FHorizontalMetrics;
 import glyphreader.record.LongHorMetricRecord;
 import java.util.ArrayList;
 
@@ -20,17 +19,19 @@ public class Glyph {
     public ArrayList<Integer> contourEnds;
     public int numberOfContours;
     public ArrayList<FPoint2d> points;
-    public FBound bound;
+    public FBound glyphBound;
+    public FBound fontBound;
     
+    //glyph horizontal metrics (glyph specific)
     private LongHorMetricRecord lmetrics = null;
-    private FHorizontalMetrics hmetrics = null;
+   
         
     public Glyph()
     {
         contourEnds = new ArrayList();
         numberOfContours = 0;
         points = new ArrayList();
-        bound = new FBound();
+        glyphBound = new FBound();
     }
     
     public void setLongHorMetricRecord(LongHorMetricRecord record)
@@ -46,15 +47,5 @@ public class Glyph {
     public FGlyphMetrics getGlyphMetrics()
     {
         return new FGlyphMetrics(this);
-    }
-    
-    public void setFHorizontalMetrics(FHorizontalMetrics hmetrics)
-    {
-        this.hmetrics = hmetrics;
-    }
-    
-    public FHorizontalMetrics getFHorizontalMetrics()
-    {
-        return hmetrics;
     }
 }

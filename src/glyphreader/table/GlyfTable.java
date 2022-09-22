@@ -8,6 +8,7 @@ package glyphreader.table;
 import glyphreader.Component;
 import glyphreader.FUtility;
 import glyphreader.Glyph;
+import glyphreader.core.FBound;
 import glyphreader.core.FMatrix;
 import glyphreader.core.FPoint2d;
 import glyphreader.map.AbstractTable;
@@ -132,10 +133,12 @@ public class GlyfTable extends AbstractTable{
         
         Glyph glyph = new Glyph();        
         glyph.numberOfContours = file.getInt16();
-        glyph.bound.xMin = file.getFword();
-        glyph.bound.yMin = file.getFword();
-        glyph.bound.xMax = file.getFword();
-        glyph.bound.yMax = file.getFword();
+        
+        //local bound
+        glyph.glyphBound.xMin = file.getFword();
+        glyph.glyphBound.yMin = file.getFword();
+        glyph.glyphBound.xMax = file.getFword();
+        glyph.glyphBound.yMax = file.getFword();
         
 
         FUtility.assertCheck(glyph.numberOfContours >= -1);
@@ -145,6 +148,11 @@ public class GlyfTable extends AbstractTable{
         } else {
             this.readSimpleGlyph(file, glyph);
         }
+        
+        //global bound
+        FUtility.assertCheck(tables.containsTable(TableType.HEAD), "no head table");
+        FBound fontBound = tables.getTable(HeadTable.class).getBound();   
+        glyph.fontBound = fontBound;
 
         return glyph;
     }

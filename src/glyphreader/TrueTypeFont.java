@@ -53,14 +53,6 @@ public final class TrueTypeFont {
         this.tables.parseTables();
                         
         length = glyphCount();
-        
-        //set horizontal metrics
-        for(int index = 0; index<glyphCount(); index++)
-        {
-            Glyph glyph = tables.getTable(GlyfTable.class).getGlyph(index);
-            if(glyph != null)
-                glyph.setFHorizontalMetrics(this.getFontMetrics());
-        }
     }
     
     public TrueTypeFont(Class<?> clazz, String fileName)
@@ -74,14 +66,6 @@ public final class TrueTypeFont {
         this.tables.parseTables();
                         
         length = glyphCount();
-        
-        //set horizontal metrics
-        for(int index = 0; index<glyphCount(); index++)
-        {
-            Glyph glyph = tables.getTable(GlyfTable.class).getGlyph(index);
-            if(glyph != null)
-                glyph.setFHorizontalMetrics(this.getFontMetrics());
-        }
     }
     
     public Glyph getGlyph(int index)
@@ -154,7 +138,8 @@ public final class TrueTypeFont {
         return tableNames;
     }
     
-    public FHorizontalMetrics getFontMetrics()
+    //general horizontal such as max and min of advance, extent, lsb, rsb
+    public FHorizontalMetrics getFontHorizontalMetrics()
     {
         return new FHorizontalMetrics(this);
     }

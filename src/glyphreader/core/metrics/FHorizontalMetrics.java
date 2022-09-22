@@ -26,12 +26,12 @@ import glyphreader.table.HheaTable;
 public class FHorizontalMetrics 
 {
     private final HheaTable hheaTable;
-    private final FBound bound;
+    private final FBound globalBounds;
     
     public FHorizontalMetrics(TrueTypeFont ttf)
     {        
         this.hheaTable = ttf.getTableList().getTable(HheaTable.class);
-        this.bound = ttf.getBound();
+        this.globalBounds = ttf.getBound();
     }
     
     public double getAscent()
@@ -51,7 +51,7 @@ public class FHorizontalMetrics
     
     public FPoint2d getPenPosition()
     {
-        return new FPoint2d(getBound().xMin - minLeftSideBearing(), getAscent());
+        return new FPoint2d(getGlobalBound().xMin - minLeftSideBearing(), getAscent());
     }
     
     public double lineGap()
@@ -59,9 +59,9 @@ public class FHorizontalMetrics
         return hheaTable.lineGap;
     }
     
-    public FBound getBound()
+    public FBound getGlobalBound()
     {
-        return bound;
+        return globalBounds;
     }
     
     public double internalLeading()
@@ -96,7 +96,7 @@ public class FHorizontalMetrics
     public double minRightSideBearing()
     {
         //return hheaTable.minRightSideBearing;
-        return advanceMaxX() - minLeftSideBearing() - getBound().getWidth();
+        return advanceMaxX() - minLeftSideBearing() - getGlobalBound().getWidth();
     }
     
     //Advance width
@@ -107,31 +107,31 @@ public class FHorizontalMetrics
     
     public double glyphMaxWidth()
     {
-        return getBound().getWidth();
+        return getGlobalBound().getWidth();
     }
     
     public double glyphMaxHeight()
     {
-        return getBound().getHeight();
+        return getGlobalBound().getHeight();
     }
     
     public double glyphXMin()
     {
-        return getBound().xMin;
+        return getGlobalBound().xMin;
     }
     
     public double glyphXMax()
     {
-        return getBound().xMax;
+        return getGlobalBound().xMax;
     }
     
     public double glyphYMin()
     {
-        return getBound().yMin;
+        return getGlobalBound().yMin;
     }
     
     public double glyphYMax()
     {
-        return getBound().yMax;
+        return getGlobalBound().yMax;
     }
 }

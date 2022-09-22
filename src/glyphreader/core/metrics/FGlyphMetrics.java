@@ -23,14 +23,14 @@ public class FGlyphMetrics {
     public FGlyphMetrics(TrueTypeFont ttf, int glyphIndex)
     {
         this.glyph = ttf.getGlyph(glyphIndex);
-        this.bound = glyph.bound.copy();
+        this.bound = glyph.glyphBound.copy();
         this.metrics = ttf.getLongHorMetricRecord(glyphIndex);
     }
     
     public FGlyphMetrics(Glyph glyph)
     {
         this.glyph = glyph;
-        this.bound = glyph.bound.copy();
+        this.bound = glyph.glyphBound.copy();
         this.metrics = glyph.getLongHorMetricRecord();
     }
     
