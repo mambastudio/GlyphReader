@@ -6,8 +6,6 @@
 package glyphreader;
 
 import glyphreader.fonts.notoserif.Resource;
-import glyphreader.map.AbstractTable;
-import glyphreader.map.Table;
 import glyphreader.map.TableDirectory;
 import glyphreader.map.TableList;
 import glyphreader.read.BinaryBufferReader;
@@ -94,16 +92,19 @@ public class TrueTypeFontInfo {
         return glyphNames;
     }
     
-    /*
-    public String getFontNameAndType()
-    {
-        
+    public String getFontFamily()
+    {        
+        return nameTable.getFirstFontFamily();
     }
     
-    public String getFontName()
+    public String getFontSubFamily()
     {
-        NameTable nmTable = (NameTable)nameTable;
-        nmTable.getFirstFontFamily()
+        return nameTable.getFirstFontSubFamily();
     }
-*/
+    
+    public String getFontFullName()
+    {
+        return nameTable.getFullName();
+    }
+
 }

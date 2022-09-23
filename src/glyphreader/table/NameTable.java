@@ -98,6 +98,11 @@ public class NameTable extends AbstractTable{
         return platformCache.getFirstPlatformType().getNameData(NameIDsEnum.FontSubfamily);
     }
     
+    public String getFullName()
+    {
+        return platformCache.getFirstPlatformType().getNameData(NameIDsEnum.FullName);
+    }
+    
     public int getNumberOfPlatforms()
     {
         return platformCache.getPlatformTypeSize();

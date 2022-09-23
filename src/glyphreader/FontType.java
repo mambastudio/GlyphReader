@@ -7,22 +7,24 @@ package glyphreader;
 
 import glyphreader.core.FBound;
 import glyphreader.core.metrics.FHorizontalMetrics;
-import java.io.InputStream;
+import java.nio.file.Path;
 
 /**
  *
  * @author jmburu
  */
-public class FontType {
-    FHorizontalMetrics hmetrics;
-    String name;
-    double size;
+public class FontType 
+{
     
-    String family;
+    private FHorizontalMetrics hmetrics;
     
-    FBound bound;
+    private String name;
+    private double size;    
+    private String family;
     
-    private TrueTypeFont fontTTF;
+    private FBound bound;
+    
+    protected TrueTypeFontInfo fontTTF = null;
     
     public FontType(String name)
     {
@@ -35,8 +37,18 @@ public class FontType {
         this.size = size;
     }
     
-    public FontType loadFont(InputStream in, double size)
+    protected FontType(TrueTypeFontInfo info, double size)
+    {
+        
+    }
+    
+    public Path getPath()
     {
         return null;
+    }
+    
+    public boolean isOpenType()
+    {
+        return true;
     }
 }
