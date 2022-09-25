@@ -62,6 +62,7 @@ public class NameTable extends AbstractTable{
             int length = file.getUint16();
             int offset = file.getUint16();
             
+           
             
             int old = file.seek(tableOffset + stringOffset + offset);
             String name;

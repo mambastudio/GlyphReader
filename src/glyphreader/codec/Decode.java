@@ -6,8 +6,11 @@
 package glyphreader.codec;
 
 import glyphreader.read.BinaryReader;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -26,22 +29,76 @@ public class Decode {
     public static String decodeUTC8(BinaryReader reader, int length)
     {
         int[] codePoints = new int[length];
+        byte[] b = new byte[length];
+        
         for(int i = 0; i<codePoints.length; i++)
         {
             int code = reader.getUint8();
+            b[i] = (byte)code;
             codePoints[i] = (byte) code;
-        }        
-        return new String(codePoints, 0, codePoints.length);
+        }  
+        try {
+            return new String(b, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(Decode.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     
     public static String decodeUTC16(BinaryReader reader, int length)
     {
-        int[] codePoints = new int[length/2];
+        int[] codePoints = new int[length];
+        byte[] b = new byte[length];
+        
         for(int i = 0; i<codePoints.length; i++)
         {
-            int code = reader.getUint16();
-            codePoints[i] = code;
-        }        
-        return new String(codePoints, 0, codePoints.length);
+            int code = reader.getUint8();
+            b[i] = (byte)code;
+            codePoints[i] = (byte) code;
+        }  
+        try {
+            return new String(b, "UTF-16");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(Decode.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public static String decodeUTC16BE(BinaryReader reader, int length)
+    {
+        int[] codePoints = new int[length];
+        byte[] b = new byte[length];
+        
+        for(int i = 0; i<codePoints.length; i++)
+        {
+            int code = reader.getUint8();
+            b[i] = (byte)code;
+            codePoints[i] = (byte) code;
+        }  
+        try {
+            return new String(b, "UTF-16BE");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(Decode.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public static String decodeUTC16LE(BinaryReader reader, int length)
+    {
+        int[] codePoints = new int[length];
+        byte[] b = new byte[length];
+        
+        for(int i = 0; i<codePoints.length; i++)
+        {
+            int code = reader.getUint8();
+            b[i] = (byte)code;
+            codePoints[i] = (byte) code;
+        }  
+        try {
+            return new String(b, "UTF-16LE");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(Decode.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

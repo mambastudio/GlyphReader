@@ -34,6 +34,9 @@ public enum NameIDsEnum {
     WWSFamily,              // 21
     WWSSubfamily,           // 22
     
+    //Name IDs 26 to 255, inclusive, are reserved for future standard names
+    ReservedForFuture,
+    
     //Font specific names 256 - 32767
     FontSpecificName
 };

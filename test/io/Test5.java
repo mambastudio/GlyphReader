@@ -6,6 +6,7 @@
 package io;
 
 import glyphreader.FontCache;
+import glyphreader.FontType;
 
 /**
  *
@@ -15,6 +16,6 @@ public class Test5 {
     public static void main(String... args)
     {
         
-        //FontCache.getPlatformFonts();
+        System.out.println(FontType.getFontNames());
     }
 }

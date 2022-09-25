@@ -7,7 +7,7 @@ package glyphreader.table;
 
 import glyphreader.Component;
 import glyphreader.FUtility;
-import glyphreader.Glyph;
+import glyphreader.glyf.Glyph;
 import glyphreader.core.FBound;
 import glyphreader.core.FMatrix;
 import glyphreader.core.FPoint2d;
@@ -15,7 +15,6 @@ import glyphreader.map.AbstractTable;
 import static glyphreader.map.Table.TableType.GLYF;
 import glyphreader.map.TableList;
 import glyphreader.record.TableRecord;
-import glyphreader.read.BinaryMapReader;
 import glyphreader.read.BinaryReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -123,7 +122,15 @@ public class GlyfTable extends AbstractTable{
         
         if (offset == 0 ||
             offset >= tables.getTableRecord(TableType.GLYF).offset + tables.getTableRecord(TableType.GLYF).length) {
-            return null;
+            
+            Glyph glyph = new Glyph();   //empty glyph
+            
+            //global bound and unitsPerEm from head table
+            FUtility.assertCheck(tables.containsTable(TableType.HEAD), "no head table");
+            FBound fontBound = tables.getTable(HeadTable.class).getBound(); 
+            glyph.fontBound = fontBound;
+            glyph.unitsPerEm = tables.getTable(HeadTable.class).unitsPerEm;
+            return glyph;
         }
 
         FUtility.assertCheck(offset >= tables.getTableRecord(TableType.GLYF).offset);
@@ -149,11 +156,11 @@ public class GlyfTable extends AbstractTable{
             this.readSimpleGlyph(file, glyph);
         }
         
-        //global bound
+        //global bound and unitsPerEm from head table
         FUtility.assertCheck(tables.containsTable(TableType.HEAD), "no head table");
-        FBound fontBound = tables.getTable(HeadTable.class).getBound();   
+        FBound fontBound = tables.getTable(HeadTable.class).getBound(); 
         glyph.fontBound = fontBound;
-
+        glyph.unitsPerEm = tables.getTable(HeadTable.class).unitsPerEm;
         return glyph;
     }
     

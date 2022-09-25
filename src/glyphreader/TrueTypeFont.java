@@ -5,6 +5,7 @@
  */
 package glyphreader;
 
+import glyphreader.glyf.Glyph;
 import glyphreader.read.BinaryMapReader;
 import glyphreader.core.FBound;
 import glyphreader.core.metrics.FGlyphMetrics;
@@ -59,6 +60,19 @@ public final class TrueTypeFont {
     {
         this.file = new BinaryBufferReader(Resource.getInputStream(Resource.class, fileName));
         
+        //read the manifest of table
+        this.directory = new TableDirectory(file); 
+        //read table offsetss
+        this.tables = new TableList(directory); //System.out.println(getTableNamesInTTF());
+        this.tables.parseTables();
+                        
+        length = glyphCount();
+    }
+    
+    public TrueTypeFont(BinaryReader file)
+    {
+        this.file = file;
+        this.file.seek(0);
         //read the manifest of table
         this.directory = new TableDirectory(file); 
         //read table offsetss

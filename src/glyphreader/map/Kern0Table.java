@@ -23,6 +23,7 @@ public class Kern0Table {
         
     public Kern0Table(BinaryReader file, boolean vertical, boolean cross)
     {
+        this.map = new HashMap();
         this.swap = vertical && !cross || !vertical && cross;
         //this.file = file;
         this.offset = file.tell();
@@ -36,7 +37,7 @@ public class Kern0Table {
             int right = file.getUint16();
             int value = file.getFword();
             this.map.put((left << 16) | right, value);
-            System.out.format("Kern %s/%s->%s", left, right, value);
+            //System.out.format("Kern %s/%s->%s", left, right, value);
         }
         this.reset();
     }

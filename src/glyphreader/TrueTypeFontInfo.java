@@ -82,6 +82,11 @@ public class TrueTypeFontInfo {
         glyphNames = postTable.glyphNames();
     }
     
+    public TrueTypeFont getFontTTF()
+    {
+        return new TrueTypeFont(file);
+    }
+    
     public String getFontBasicInfo()
     {        
         return nameTable.toString();

@@ -53,8 +53,8 @@ public class TableList {
                 record.offset = file.getUint32();
                 record.length = file.getUint32(); 
                 records.add(record);
-                if(!Table.compare(tag, HEAD))
-                    checkIfTableRecordReadCorrect(record);
+                //if(!Table.compare(tag, HEAD))
+                //    checkIfTableRecordReadCorrect(record);
             }
             else //just read for table record storage
             {
@@ -63,8 +63,8 @@ public class TableList {
                 record.offset = file.getUint32();
                 record.length = file.getUint32(); 
                 records.add(record);
-                if(!Table.compare(tag, HEAD))
-                    checkIfTableRecordReadCorrect(record);
+                //if(!Table.compare(tag, HEAD))
+                //    checkIfTableRecordReadCorrect(record);
             }
             
         }  

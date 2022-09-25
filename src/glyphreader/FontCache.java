@@ -6,7 +6,9 @@
 package glyphreader;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.prefs.Preferences;
@@ -26,12 +28,7 @@ public final class FontCache {
     {
         
     }
-    
-    private static void init()
-    {
-        prefs = Preferences.systemRoot();
-    }
-    
+        
     /**
    * detect the operating system from the os.name System property and cache
    * the result
@@ -79,10 +76,26 @@ public final class FontCache {
                 fontListSystemInfo = new HashMap();
             
             for(File fontFile : fontFiles)
-            {
+            {                
                 TrueTypeFontInfo fontInfo = new TrueTypeFontInfo(fontFile.toPath());
                 fontListSystemInfo.put(fontInfo.getFontFullName(), fontInfo);
             }
         }  
+    }
+    
+    public static TrueTypeFontInfo getTTFInfo(String fullName)
+    {
+        if(fontListSystemInfo == null)
+            initPlatformFonts();
+        return fontListSystemInfo.getOrDefault(fullName, null);
+    }
+    
+    public static List<TrueTypeFontInfo> getSystemTTFInfo()
+    {
+        if(fontListSystemInfo == null)
+            initPlatformFonts();
+        List<TrueTypeFontInfo> list = new ArrayList();
+        list.addAll(fontListSystemInfo.values());
+        return list;
     }
 }

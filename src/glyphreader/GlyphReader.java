@@ -5,6 +5,7 @@
  */
 package glyphreader;
 
+import glyphreader.glyf.Glyph;
 import glyphreader.core.metrics.FGlyphMetrics;
 import java.nio.file.Paths;
 

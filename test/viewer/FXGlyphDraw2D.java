@@ -5,7 +5,7 @@
  */
 package viewer;
 
-import glyphreader.Glyph;
+import glyphreader.glyf.Glyph;
 import glyphreader.TrueTypeFont;
 import glyphreader.core.FPoint2d;
 import javafx.scene.canvas.GraphicsContext;

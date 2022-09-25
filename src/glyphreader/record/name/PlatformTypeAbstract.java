@@ -40,6 +40,11 @@ public abstract class PlatformTypeAbstract<S  extends PlatformSpecificAbstractEn
             putNameData(NameIDsEnum.FontSpecificName, name);
             return;
         }
+        else if(nameID >= 26)
+        {
+            putNameData(NameIDsEnum.ReservedForFuture, name);
+            return;
+        }
         putNameData(NameIDsEnum.values()[nameID], name);
     }
     

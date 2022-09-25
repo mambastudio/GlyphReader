@@ -6,48 +6,51 @@
 package glyphreader.record.name;
 
 import glyphreader.enumtypes.LanguageIDsPlatformAbstractEnum;
+import glyphreader.enumtypes.LanguageIDsUnicodeEnum;
 import glyphreader.enumtypes.PlatformSpecificIDUnicodeEnum;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  *
  * @author jmburu
  */
-public class PlatformTypeUnicode extends PlatformTypeAbstract<PlatformSpecificIDUnicodeEnum, LanguageIDsPlatformAbstractEnum>{
-
+public class PlatformTypeUnicode extends PlatformTypeAbstract<PlatformSpecificIDUnicodeEnum, LanguageIDsUnicodeEnum>{
+    private PlatformSpecificIDUnicodeEnum encode = null;
+    private LanguageIDsUnicodeEnum language = null;
     @Override
     public void setSpecificEncoding(PlatformSpecificIDUnicodeEnum encode) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.encode = encode;
     }
 
     @Override
     public PlatformSpecificIDUnicodeEnum getSpecificEncoding() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return encode;
     }
 
     @Override
     public void setSpecificEncoding(int encode) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.encode = PlatformSpecificIDUnicodeEnum.values()[encode];
     }
 
     @Override
-    public void setLanguage(int encode) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setLanguage(int id) {
+        language = LanguageIDsUnicodeEnum.NONE;
     }
 
     @Override
-    public void setLanguage(LanguageIDsPlatformAbstractEnum encode) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setLanguage(LanguageIDsUnicodeEnum languageID) {
+        this.language = languageID;
     }
 
     @Override
-    public LanguageIDsPlatformAbstractEnum getLanguage() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public LanguageIDsUnicodeEnum getLanguage() {
+        return language;
     }
 
     @Override
     public Charset getPlatformCharset() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return StandardCharsets.UTF_16BE;
     }
     
 }

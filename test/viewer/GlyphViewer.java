@@ -6,7 +6,7 @@
 package viewer;
 
 import glyphreader.core.FBound;
-import glyphreader.Glyph;
+import glyphreader.glyf.Glyph;
 import glyphreader.core.FPoint2d;
 import glyphreader.TrueTypeFont;
 import glyphreader.fonts.notoserif.Resource;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package glyphreader;
+package glyphreader.glyf;
 
 import glyphreader.core.FBound;
 import glyphreader.core.FPoint2d;
@@ -16,11 +16,15 @@ import java.util.ArrayList;
  * @author jmburu
  */
 public class Glyph {
+    //from glyph table
     public ArrayList<Integer> contourEnds;
     public int numberOfContours;
     public ArrayList<FPoint2d> points;
     public FBound glyphBound;
-    public FBound fontBound;
+    
+    //from head table and this initialized from glyph table (head table is loaded first hence accessible)
+    public double unitsPerEm;   
+    public FBound fontBound;    
     
     //glyph horizontal metrics (glyph specific)
     private LongHorMetricRecord lmetrics = null;
@@ -30,8 +34,10 @@ public class Glyph {
     {
         contourEnds = new ArrayList();
         numberOfContours = 0;
+        unitsPerEm = 0;
         points = new ArrayList();
         glyphBound = new FBound();
+        fontBound = new FBound();
     }
     
     public void setLongHorMetricRecord(LongHorMetricRecord record)
@@ -47,5 +53,10 @@ public class Glyph {
     public FGlyphMetrics getGlyphMetrics()
     {
         return new FGlyphMetrics(this);
+    }
+    
+    public boolean isEmpty()
+    {
+        return points.isEmpty();
     }
 }

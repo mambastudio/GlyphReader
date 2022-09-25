@@ -5,7 +5,7 @@
  */
 package glyphreader.core.metrics;
 
-import glyphreader.Glyph;
+import glyphreader.glyf.Glyph;
 import glyphreader.TrueTypeFont;
 import glyphreader.core.FBound;
 import glyphreader.record.LongHorMetricRecord;
@@ -13,6 +13,9 @@ import glyphreader.record.LongHorMetricRecord;
 /**
  *
  * @author jmburu
+ * 
+ * This can be initiated from ttf class or glyph class (since it's glyph info)
+ * 
  */
 public class FGlyphMetrics {
     Glyph glyph;
