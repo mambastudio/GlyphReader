@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,13 +35,12 @@ public class TrueTypeFontInfo {
     public TableList tables = null;
     
     //default font info
-    NameTable nameTable = null;
-    ArrayList<PlatformTypeAbstract> platformList = null;
+    private NameTable nameTable = null;
+    private ArrayList<PlatformTypeAbstract> platformList = null;
         
     //glyph names
-    PostTable postTable = null;
-    String[] glyphNames = null;
-    
+    private HashMap<String, Integer> glyphNamesMap ;
+       
     public TrueTypeFontInfo(Path path)
     {
         try {
@@ -56,10 +56,9 @@ public class TrueTypeFontInfo {
             nameTable.parse(file, tables);
             platformList = nameTable.getPlatforms().getAllPlatforms();
             //glyph info
-            postTable = tables.getTable(PostTable.class);
+            PostTable postTable = tables.getTable(PostTable.class);
             postTable.parse(file, tables);
-            glyphNames = postTable.glyphNames();
-            
+            glyphNamesMap = postTable.getGlyphNameMap();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(TrueTypeFontInfo.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -77,9 +76,9 @@ public class TrueTypeFontInfo {
         nameTable.parse(file, tables);
         platformList = nameTable.getPlatforms().getAllPlatforms();
         //glyph info
-        postTable = tables.getTable(PostTable.class);
+        PostTable postTable = tables.getTable(PostTable.class);
         postTable.parse(file, tables);
-        glyphNames = postTable.glyphNames();
+        glyphNamesMap = postTable.getGlyphNameMap();
     }
     
     public TrueTypeFont getFontTTF()
@@ -94,12 +93,23 @@ public class TrueTypeFontInfo {
     
     public String[] glyphNamesInfo()
     {
-        return glyphNames;
+        String[] stringNames = new String[glyphNamesMap.size()];        
+        return glyphNamesMap.keySet().toArray(stringNames);        
     }
     
     public String getFontFamily()
     {        
         return nameTable.getFirstFontFamily();
+    }
+    
+    public boolean containsGlyphName(String glyphName)
+    {
+        return glyphNamesMap.containsKey(glyphName);
+    }
+    
+    public int getIndexOfGlyphName(String glyphName)
+    {
+        return glyphNamesMap.getOrDefault(glyphName, -1);
     }
     
     public String getFontSubFamily()

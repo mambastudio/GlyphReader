@@ -16,6 +16,6 @@ public class Test5 {
     public static void main(String... args)
     {
         
-        System.out.println(FontType.getFontNames());
+        System.out.println(FontType.getFontSystemNames());
     }
 }

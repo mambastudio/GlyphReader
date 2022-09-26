@@ -5,6 +5,7 @@
  */
 package glyphreader;
 
+import glyphreader.glyf.Glyph;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,8 @@ import java.util.List;
 public class FontType 
 {
     private double size;
-    protected TrueTypeFontInfo fontTTF = null;
+    protected TrueTypeFontInfo fontTTFInfo = null;
+    protected TrueTypeFont fontTTF = null;
     
     private FontType()
     {
@@ -31,13 +33,23 @@ public class FontType
         else
         {
             FontType font = new FontType();
-            font.fontTTF = info;
+            font.fontTTFInfo = info;
             font.size = size;
             return font;
         }        
     }
     
-    public static List<String> getFontNames()
+    public static FontType font(Path path, double size)
+    {
+        TrueTypeFontInfo info = new TrueTypeFontInfo(path);
+        
+        FontType font = new FontType();
+        font.fontTTFInfo = info;
+        font.size = size;
+        return font;
+    }
+    
+    public static List<String> getFontSystemNames()
     {
         List<TrueTypeFontInfo> ttfInfos = FontCache.getSystemTTFInfo();
         List<String> ttfNames = new ArrayList();
@@ -46,14 +58,14 @@ public class FontType
         return ttfNames;
     }
     
-    public static List<FontType> getAllFonts(int size)
+    public static List<FontType> getAllSystemFonts(int size)
     {
         List<TrueTypeFontInfo> ttfInfos = FontCache.getSystemTTFInfo();
         List<FontType> fonts = new ArrayList();
         for(TrueTypeFontInfo info : ttfInfos)
         {
             FontType font = new FontType();
-            font.fontTTF = info;
+            font.fontTTFInfo = info;
             font.size = size;
             fonts.add(font);
         }
@@ -62,24 +74,19 @@ public class FontType
     
     public String getFamily()
     {
-        return fontTTF.getFontFamily();
+        return fontTTFInfo.getFontFamily();
     }
     
     public String getSubFamily()
     {
-        return fontTTF.getFontSubFamily();
+        return fontTTFInfo.getFontSubFamily();
     }
     
     public double getSize()
     {
         return size;
     }
-    
-    public Path getPath()
-    {
-        return null;
-    }
-    
+        
     public boolean isOpenType()
     {
         return true;
@@ -87,12 +94,26 @@ public class FontType
     
     public TrueTypeFontInfo getTTFInfo()
     {
+        return fontTTFInfo;
+    }
+    
+    public Glyph getGlyph(int index)
+    {
+        if(fontTTF == null)
+            fontTTF = fontTTFInfo.getFontTTF();
+        return fontTTF.getGlyph(index);
+    }
+    
+    public TrueTypeFont getTrueTypeFont()
+    {
+        if(fontTTF == null)
+            fontTTF = fontTTFInfo.getFontTTF();
         return fontTTF;
     }
     
     @Override
     public String toString()
     {
-        return fontTTF.getFontFullName();
+        return fontTTFInfo.getFontFullName();
     }
 }

@@ -13,6 +13,7 @@ import glyphreader.record.TableRecord;
 import glyphreader.read.BinaryReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  *
@@ -30,7 +31,7 @@ public class PostTable extends AbstractTable{
     public int maxMemType1 = 0;
     
     //targeting version 2.0   
-    public String[] stringData = null;
+    public HashMap<String, Integer> glyphNameMap = null;
         
     public PostTable(TableRecord record)
     {
@@ -53,25 +54,29 @@ public class PostTable extends AbstractTable{
         this.minMemType1        = file.getUint32();
         this.maxMemType1        = file.getUint32();
         
+        //init glyph name map
+        glyphNameMap = new HashMap();
+        
         switch (Double.toString(version)) {
-            case "1.0":
-                stringData = Arrays.copyOf(standardNames, standardNames.length);
+            case "1.0":                
+                for(int i = 0; i<standardNames.length; i++)
+                    glyphNameMap.put(standardNames[i], i);                
                 break;
             case "2.0":
                 int numGlyphs = file.getUint16();
+                //glyph name indices
                 int glyphNameIndex[] = new int[numGlyphs];
-                for(int i = 0; i<numGlyphs; i++)
-                {
+                for(int i = 0; i<numGlyphs; i++)               
                     glyphNameIndex[i] = file.getUint16();
-                }   stringData = new String[numGlyphs];
+                
                 for (int i = 0; i < numGlyphs; i++) {
                     
                     if (glyphNameIndex[i] >= standardNames.length) {
                         int nameLength = file.getUint8();
-                        stringData[i]= file.getString(nameLength, StandardCharsets.UTF_8); //Glyph name strings are encoded in ASCII - 8 bit
+                        glyphNameMap.put(file.getString(nameLength, StandardCharsets.UTF_8), glyphNameIndex[i]); //Glyph name strings are encoded in ASCII - 8 bit      
                     }
                     else
-                        stringData[i] = standardNames[glyphNameIndex[i]];
+                        glyphNameMap.put(standardNames[glyphNameIndex[i]], glyphNameIndex[i]);                             
                 }   break;        
             case "2.5":
                 //This is deprecated
@@ -85,7 +90,13 @@ public class PostTable extends AbstractTable{
     
     public String[] glyphNames()
     {
-        return stringData;
+        String[] stringNames = new String[glyphNameMap.size()];        
+        return glyphNameMap.keySet().toArray(stringNames);
+    }
+    
+    public HashMap<String, Integer> getGlyphNameMap()
+    {
+        return glyphNameMap;
     }
 
     @Override
