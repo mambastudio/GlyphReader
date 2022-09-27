@@ -5,6 +5,7 @@
  */
 package glyphreader.jfx;
 
+import glyphreader.FontType;
 import glyphreader.core.FBound;
 import glyphreader.core.FPoint2d;
 import glyphreader.glyf.Glyph;
@@ -33,6 +34,11 @@ public class GlyphNode extends Group {
         this.glyph = glyph;
         this.size = size;
         this.applyGlyphCentered();
+    }
+    
+    public GlyphNode(FontType font, String name)
+    {
+        this(font.getGlyph(name), font.getSize());        
     }
     
     private void applyGlyphCentered()

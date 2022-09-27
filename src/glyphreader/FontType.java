@@ -49,6 +49,16 @@ public class FontType
         return font;
     }
     
+    public static FontType font(Class<?> clazz, String fileName, double size)
+    {
+        TrueTypeFontInfo info = new TrueTypeFontInfo(clazz, fileName);
+        
+        FontType font = new FontType();
+        font.fontTTFInfo = info;
+        font.size = size;
+        return font;
+    }
+    
     public static List<String> getFontSystemNames()
     {
         List<TrueTypeFontInfo> ttfInfos = FontCache.getSystemTTFInfo();
@@ -103,13 +113,20 @@ public class FontType
             fontTTF = fontTTFInfo.getFontTTF();
         return fontTTF.getGlyph(index);
     }
+        
+    public Glyph getGlyph(String name)
+    {
+        if(fontTTF == null)
+            fontTTF = fontTTFInfo.getFontTTF();
+        return fontTTF.getGlyph(fontTTFInfo.getIndexOfGlyphName(name));
+    }
     
     public TrueTypeFont getTrueTypeFont()
     {
         if(fontTTF == null)
             fontTTF = fontTTFInfo.getFontTTF();
         return fontTTF;
-    }
+    }    
     
     @Override
     public String toString()
