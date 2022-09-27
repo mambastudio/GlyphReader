@@ -126,7 +126,15 @@ public class FontType
         if(fontTTF == null)
             fontTTF = fontTTFInfo.getFontTTF();
         return fontTTF;
-    }    
+    }  
+    
+    public FontType copy(double size)
+    {
+        FontType font = new FontType();
+        font.fontTTFInfo = fontTTFInfo;
+        font.size = size;
+        return font;
+    }
     
     @Override
     public String toString()

@@ -26,8 +26,8 @@ import javafx.scene.transform.Translate;
  * @author jmburu
  */
 public class GlyphNode extends Group {
-    private final Glyph glyph;
-    private final double size;
+    protected Glyph glyph;
+    protected double size;
         
     public GlyphNode(Glyph glyph, double size)
     {
@@ -41,7 +41,7 @@ public class GlyphNode extends Group {
         this(font.getGlyph(name), font.getSize());        
     }
     
-    private void applyGlyphCentered()
+    protected void applyGlyphCentered()
     {
         //get glyph centered in font bound
         Path path = getOutlineCentered();

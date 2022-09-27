@@ -79,6 +79,8 @@ public class GlyfTable extends AbstractTable{
     
     public Glyph getGlyph(int index)
     {
+        if(index == -1)
+            return glyphs.get(0); //glyph 0 is the null representation
         return glyphs.get(index);
     }
     

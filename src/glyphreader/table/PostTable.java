@@ -72,11 +72,12 @@ public class PostTable extends AbstractTable{
                 for (int i = 0; i < numGlyphs; i++) {
                     
                     if (glyphNameIndex[i] >= standardNames.length) {
+                        
                         int nameLength = file.getUint8();
-                        glyphNameMap.put(file.getString(nameLength, StandardCharsets.UTF_8), glyphNameIndex[i] - 258); //Glyph name strings are encoded in ASCII - 8 bit      
+                        glyphNameMap.put(file.getString(nameLength, StandardCharsets.UTF_8), i); //Glyph name strings are encoded in ASCII - 8 bit      
                     }
                     else
-                        glyphNameMap.put(standardNames[i], i);                             
+                        glyphNameMap.put(standardNames[glyphNameIndex[i]], i);                             
                 }   break;        
             case "2.5":
                 //This is deprecated
@@ -86,7 +87,6 @@ public class PostTable extends AbstractTable{
                 break;
         }  
         
-        System.out.println(glyphNameMap);
         return true;
     }    
     
