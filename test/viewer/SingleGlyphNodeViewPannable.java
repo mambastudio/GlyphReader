@@ -18,9 +18,9 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author user
+ * @author jmburu
  */
-public class SingleGlyphNodeView extends Application{
+public class SingleGlyphNodeViewPannable extends Application{
     
     double size = 64;
 
@@ -35,10 +35,10 @@ public class SingleGlyphNodeView extends Application{
         FontType font = FontType.font(Resource.class, "FontAwesome.ttf", size);
         GlyphNode node = new GlyphNode(font, "W");
       
-        baseDrawPanel.getChildren().add(node);
+        baseDrawPanel.getChildren().add(new PanDisplay(node));
         
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Single Glyph Node View");
+        primaryStage.setTitle("Single Glyph Node View Pannable");
        // primaryStage.setMaximized(true);
         primaryStage.show();
         

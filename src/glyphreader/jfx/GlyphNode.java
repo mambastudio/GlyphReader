@@ -28,7 +28,7 @@ import javafx.scene.transform.Translate;
 public class GlyphNode extends Group {
     protected Glyph glyph;
     protected double size;
-        
+    
     public GlyphNode(Glyph glyph, double size)
     {
         this.glyph = glyph;
@@ -41,7 +41,13 @@ public class GlyphNode extends Group {
         this(font.getGlyph(name), font.getSize());        
     }
     
-    protected void applyGlyphCentered()
+    
+    public GlyphNode(FontType font, int index)
+    {
+        this(font.getGlyph(index), font.getSize());        
+    }
+    
+    protected final void applyGlyphCentered()
     {
         //get glyph centered in font bound
         Path path = getOutlineCentered();
@@ -54,28 +60,41 @@ public class GlyphNode extends Group {
         this.getChildren().setAll(fontRectangleBound, path);       
     }
     
-    private Path getOutlineCentered()
+    //this is to accomodate for zoom once scene/stage is visible
+    public double adjustScale(double newSize)
     {
-        Path path = getOutline();
-        path.getTransforms().addAll(new Translate(glyph.fontBound.getWidth()/2 - glyph.glyphBound.getWidth()/2, 0));
-        return path;
+        if(newSize < 12)
+            size = 12;
+        else
+            size = newSize;
+        
+        applyGlyphCentered();
+        
+        return size;
+    }
+    
+    private Path getOutlineCentered()
+    { 
+        Path outlinePath = getOutline();
+        outlinePath.getTransforms().addAll(new Translate(glyph.fontBound.getWidth()/2 - glyph.glyphBound.getWidth()/2, 0));
+        return outlinePath;
     }
     
     private Path getOutline()
     {
-        Path path = getPath();
+        Path glyphOutline = getPath();
         
-        if(!path.getElements().isEmpty())
+        if(!glyphOutline.getElements().isEmpty())
         {
             //margin is space from top global bound to top glyph bound
             double marginY = glyph.glyphBound.yMin - glyph.fontBound.yMin;    
             //translate to left of bound (x = 0) and then height relative to baseline 
-            path.getTransforms().setAll( getScale(), new Translate(-glyph.getLongHorMetricRecord().lsb, -glyph.glyphBound.yMin - glyph.fontBound.getHeight() + marginY));
+            glyphOutline.getTransforms().setAll( getScale(), new Translate(-glyph.getLongHorMetricRecord().lsb, -glyph.glyphBound.yMin - glyph.fontBound.getHeight() + marginY));
             //specific paint/color
-            path.setFill(Color.BLACK);         
+            glyphOutline.setFill(Color.BLACK);         
         }
         
-        return path;
+        return glyphOutline;
     }
     
     private Scale getScale()
@@ -89,7 +108,7 @@ public class GlyphNode extends Group {
     
     private Path getPath()
     {
-        Path path = new Path();
+        Path glyphPath = new Path();
         if(!glyph.isEmpty())
         {
             int x = 0, y = 0;
@@ -110,14 +129,14 @@ public class GlyphNode extends Group {
                         moveTo.setX(point.x + x);
                         moveTo.setY(point.y + y);
                         s = 1;
-                        path.getElements().add(moveTo);
+                        glyphPath.getElements().add(moveTo);
                         break;
                     case 1:
                         if (point.onCurve) {        
                             LineTo lineTo = new LineTo();
                             lineTo.setX(point.x + x);
                             lineTo.setY(point.y + y);
-                            path.getElements().add(lineTo);
+                            glyphPath.getElements().add(lineTo);
                         } 
                         else {
                             s = 2;
@@ -138,7 +157,7 @@ public class GlyphNode extends Group {
                             quadCurveTo.setX((prev.x + point.x) / 2 + x);
                             quadCurveTo.setY((prev.y + point.y) / 2 + y);                       
                         }
-                        path.getElements().add(quadCurveTo);
+                        glyphPath.getElements().add(quadCurveTo);
                         break;
                 }
                 if (p == glyph.contourEnds.get(c)) {
@@ -157,7 +176,7 @@ public class GlyphNode extends Group {
                             quadCurveTo.setX((prev.x + point.x) / 2 + x);
                             quadCurveTo.setY((prev.y + point.y) / 2 + y);       
                         }
-                        path.getElements().add(quadCurveTo);
+                        glyphPath.getElements().add(quadCurveTo);
                     }
                     contourStart = p + 1;
                     c += 1;
@@ -165,7 +184,7 @@ public class GlyphNode extends Group {
                 }
             }
         }
-        return path;
+        return glyphPath;
     }
         
     private Rectangle getTransformedFontRectangle()
@@ -181,4 +200,9 @@ public class GlyphNode extends Group {
         return new BoundingBox(0, 0, fbounds.getWidth() * fscale, fbounds.getHeight() * fscale); 
     }
     
+    
+    public double getSize()
+    {
+        return size;
+    }
 }
