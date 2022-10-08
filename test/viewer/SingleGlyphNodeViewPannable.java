@@ -43,17 +43,6 @@ public class SingleGlyphNodeViewPannable extends Application{
         primaryStage.show();
         
         
-        baseDrawPanel.setOnScroll(evt->{
-            
-            evt.consume();
-
-            if(evt.getDeltaY() > 0)            
-                size += 20;                  
-            else
-                size -= 20;
-            
-            size = node.adjustScale(size);
-        });
     }
     
     public static void main(String[] args) {
