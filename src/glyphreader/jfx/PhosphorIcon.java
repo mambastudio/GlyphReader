@@ -44,6 +44,35 @@ public class PhosphorIcon extends GlyphNode{
         
     }
     
+    public PhosphorIcon(boolean outline)
+    {
+        super(font, ".notdef");
+        this.glyphName = new SimpleStringProperty(".notdef");
+        this.glyphName.addListener((o, ov, nv)->{
+            if(nv == null)
+                super.glyph = font.getGlyph(0);
+            else
+                super.glyph = font.getGlyph(nv);
+            
+            if(outline)
+                applyOutline();
+            else
+                applyGlyphCentered();
+        });
+        this.glyphSize = new SimpleDoubleProperty(20);
+        this.glyphSize.addListener((o, ov, nv)->{
+            if(nv == null || nv.doubleValue() < 5d)
+                super.size = 5;
+            else
+                super.size = nv.doubleValue();
+                        
+            if(outline)
+                applyOutline();
+            else
+                applyGlyphCentered();
+        });
+    }
+    
     public String getGlyphName()
     {
         return glyphName.get();

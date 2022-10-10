@@ -60,6 +60,14 @@ public class GlyphNode extends Group {
         this.getChildren().setAll(fontRectangleBound, path);       
     }
     
+    protected final void applyOutline()
+    {
+        //get glyph centered in font bound
+        Path path = getOutline();
+        
+        this.getChildren().setAll(path);       
+    }
+    
     //this is to accomodate for zoom once scene/stage is visible
     public double adjustScale(double newSize)
     {
